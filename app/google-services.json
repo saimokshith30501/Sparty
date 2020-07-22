@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "866433496588",
+    "firebase_url": "https://sparty-741a5.firebaseio.com",
+    "project_id": "sparty-741a5",
+    "storage_bucket": "sparty-741a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866433496588:android:5cd5f3324df7e623e62029",
+        "android_client_info": {
+          "package_name": "com.developer.sparty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866433496588-o1ljkblnva5ru1ds32vqta713req4l7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv8lB-G2dPpEvKlArpjmIfMcqZJG5Hat8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866433496588-o1ljkblnva5ru1ds32vqta713req4l7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

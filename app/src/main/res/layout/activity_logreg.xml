@@ -7,7 +7,8 @@
     android:background="#A9C4DF"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/main_layout">
 
     <ImageView
         android:id="@+id/logo"
@@ -21,10 +22,12 @@
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
         android:fontFamily="@font/bungee"
         android:text="Hello there,Welcome"
         android:textColor="#C80C0C0C"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        android:transitionName="logo_name" />
 
     <TextView
         android:id="@+id/slogan"
@@ -40,78 +43,84 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Phone number"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
+            android:hint="Email"
             android:transitionName="username_field"
-            >
+            app:boxStrokeColor="#000000"
+            app:hintTextAppearance="@style/mytext">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:textColor="#000000"
-                android:textColorHighlight="#000000">
+                android:textColor="#000000">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Password"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
-            app:passwordToggleEnabled="true"
             android:transitionName="password_field"
-            >
+            app:boxStrokeColor="#000000"
+            app:hintTextAppearance="@style/mytext"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#000000"
                 android:inputType="textPassword"
+                android:textColor="#000000"
                 android:textColorHighlight="#000000">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
+
         <Button
+            android:id="@+id/forgot_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forgot Password"
-            android:background="#00000000"
-            android:textStyle="bold"
-            android:textColor="#000000"
             android:layout_gravity="right"
-            android:padding="10dp">
+            android:background="#00000000"
+            android:padding="10dp"
+            android:text="Forgot Password"
+            android:textColor="#000000"
+            android:textStyle="bold">
 
         </Button>
+
         <Button
             android:id="@+id/signin"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
+            android:layout_gravity="center_horizontal"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/login_logo"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:drawablePadding="0dp"
             android:elevation="20dp"
             android:fontFamily="@font/bungee"
+            android:onClick="signin"
             android:text="Sign-In"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:transitionName="sign"
-            android:onClick="signin"/>
+            android:transitionName="sign" />
 
         <Button
             android:layout_width="wrap_content"
@@ -119,19 +128,11 @@
             android:layout_gravity="center_horizontal"
             android:background="#00000000"
             android:onClick="signup"
+            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:text="New User?SIGN UP"
             android:textColor="#000000"
             android:textStyle="bold"></Button>
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="@style/mytext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:progressTint="#0C3BED"></ProgressBar>
-
 
 
     </LinearLayout>

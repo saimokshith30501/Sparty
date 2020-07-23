@@ -9,20 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".phoneverify"></activity>
+        <activity android:name=".ProfileActivity" android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar"></activity>
+        <activity android:name=".phoneverify" />
         <activity android:name=".signup" />
         <activity android:name=".LOGorREG" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

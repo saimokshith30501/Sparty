@@ -3,20 +3,25 @@ package com.developer.sparty;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -28,18 +33,23 @@ public class phoneverify extends AppCompatActivity {
     String phoneno,verifycationCODE;
     Button verifyB;
     TextInputLayout codeLayout;
-    ProgressBar progressBar;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
+    private FirebaseAuth mAuth;
+    ProgressDialog progressOTP,progressREG;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phoneverify);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         verifyB=findViewById(R.id.verify_btn);
         codeLayout=findViewById(R.id.code_user);
-        progressBar=findViewById(R.id.progress_bar);
         phoneno=getIntent().getStringExtra("NUM");
-        progressBar.setVisibility(View.VISIBLE);
+        mAuth = FirebaseAuth.getInstance();
+        progressREG = new ProgressDialog(this);
+        progressREG.setMessage("Registering user");
+        progressOTP = new ProgressDialog(this);
+        progressOTP.setMessage("Waiting for OTP");
         sendVerificationCodeToUser(phoneno);
     }
 
@@ -57,6 +67,7 @@ public class phoneverify extends AppCompatActivity {
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
+            progressOTP.show();
             verifycationCODE=s;
 
         }
@@ -65,7 +76,6 @@ public class phoneverify extends AppCompatActivity {
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
           String code= phoneAuthCredential.getSmsCode();
           if(code!=null){
-              progressBar.setVisibility(View.VISIBLE);
               verifyCode(code);
           }
         }
@@ -73,6 +83,8 @@ public class phoneverify extends AppCompatActivity {
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
             Toast.makeText(phoneverify.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            progressOTP.dismiss();
+            finish();
         }
     };
 
@@ -88,19 +100,51 @@ public class phoneverify extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            firebaseDatabase=FirebaseDatabase.getInstance();
-                            reference=firebaseDatabase.getReference("Users");
-                            reference.child(phoneno).setValue(signup.userHelperClass);
-                            Intent intent=new Intent(getApplicationContext(),LOGorREG.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+                            progressOTP.dismiss();
+                            progressREG.show();
+                            regUser();
                         }
                         else {
                            Toast.makeText(phoneverify.this,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     }
                 });
+
+    }
+
+    private void regUser() {
+        firebaseDatabase=FirebaseDatabase.getInstance();
+        reference=firebaseDatabase.getReference("Users");
+        reference.child(phoneno).setValue(signup.userHelperClass);
+        mAuth.createUserWithEmailAndPassword(signup.userHelperClass.EMAIL,signup.userHelperClass.PASSWORD)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            progressREG.dismiss();
+                            Toast.makeText(phoneverify.this, "SUCCESS"+user.getEmail(),Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(getApplicationContext(),ProfileActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            progressREG.dismiss();
+                            Toast.makeText(phoneverify.this, "Authentication failed."+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressREG.dismiss();
+                Toast.makeText(phoneverify.this, "Failed."+e.getMessage(),Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
     }
 }

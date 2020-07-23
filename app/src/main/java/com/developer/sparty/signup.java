@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -16,6 +17,7 @@ public class signup extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         fullname = findViewById(R.id.name);
         username = findViewById(R.id.username);
         emailid = findViewById(R.id.email);
@@ -85,7 +87,7 @@ public class signup extends AppCompatActivity {
                 "(?=.*[a-zA-Z])" +      //any letter
                 "(?=.*[@#$%^&+=])" +    //at least 1 special character
                 "(?=\\S+$)" +           //no white spaces
-                ".{4,}" +               //at least 4 characters
+                ".{6,}" +               //at least 4 characters
                 "$";
 
         if (val.isEmpty()) {

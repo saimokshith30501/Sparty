@@ -2,27 +2,35 @@ package com.developer.sparty;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionBarContextView;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,9 +47,9 @@ public class LOGorREG extends AppCompatActivity {
     TextView textView,slog;
     TextInputLayout uname,pass;
     Button signin,forgot;
-    ProgressDialog progressDialog;
-    FirebaseAuth mAuth;
-    LinearLayout linearLayout;
+    ProgressDialog progressDialog,progressReset;
+    private FirebaseAuth mAuth;
+    SignInButton signInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +62,11 @@ public class LOGorREG extends AppCompatActivity {
         pass=findViewById(R.id.password);
         signin=findViewById(R.id.signin);
         forgot=findViewById(R.id.forgot_bt);
-        linearLayout= (LinearLayout) findViewById(R.id.main_layout);
+        signInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Authenticating");
-
+        progressReset = new ProgressDialog(this);
+        progressReset.setMessage("Sending");
         mAuth=FirebaseAuth.getInstance();
     }
     public void signup(View view){
@@ -77,9 +86,11 @@ public class LOGorREG extends AppCompatActivity {
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (val.isEmpty()) {
             uname.setError("Field cannot be empty");
+            uname.setFocusable(true);
             return false;
         } else if (!val.matches(emailPattern)) {
             uname.setError("Invalid email address");
+            uname.setFocusable(true);
             return false;
         } else {
             uname.setError(null);
@@ -94,7 +105,8 @@ public class LOGorREG extends AppCompatActivity {
             pass.setFocusable(true);
             return false;
         } else if (val.length()<6){
-            pass.setError("Enter a valid phone number");
+            pass.setError("Password length too short");
+            pass.setFocusable(true);
             return false;
         }else {
             pass.setError(null);
@@ -142,4 +154,69 @@ public class LOGorREG extends AppCompatActivity {
         finish();
     }
 
+    public void recoverPass(final View view){
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        LinearLayout linearLayout=new LinearLayout(this);
+        final EditText emailEntered=new EditText(this);
+        emailEntered.setHint("Enter Registered Email");
+        emailEntered.setMinEms(15);
+        linearLayout.addView(emailEntered);
+//        linearLayout.setBackgroundColor(Color.parseColor("#A9C4DF"));
+        linearLayout.setPadding(30,10,30,10);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        builder.setTitle("Recover Password").setPositiveButton("Send Link", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                 String email=emailEntered.getText().toString().trim();
+                 if (vaidateEmail(email)) {
+                     beginRecovery(email);
+                 }else {
+                     Snackbar.make(getWindow().getDecorView().getRootView(), "Enter a valid email", Snackbar.LENGTH_SHORT).show();
+                 }
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+            }
+        });
+        builder.setView(linearLayout);
+        builder.setIcon(R.drawable.recovery_icon);
+        builder.create().show();
+    }
+
+    private void beginRecovery(String email) {
+        progressReset.show();
+        final int[] s = new int[1];
+         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+             @Override
+             public void onComplete(@NonNull Task<Void> task) {
+                 if (task.isSuccessful()){
+                     progressReset.dismiss();
+                     Snackbar.make(getWindow().getDecorView().getRootView(), "Reset Link has been sent successfully", Snackbar.LENGTH_SHORT).show();
+                 }
+                 else {
+                     progressReset.dismiss();
+//                     Snackbar.make(findViewById(R.id.viewSnack),task.getException().getMessage(),Snackbar.LENGTH_SHORT).show();
+                     Toast.makeText(LOGorREG.this, "Failed "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                 }
+             }
+         }).addOnFailureListener(new OnFailureListener() {
+             @Override
+             public void onFailure(@NonNull Exception e) {
+                 progressReset.dismiss();
+                 Toast.makeText(LOGorREG.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+             }
+         });
+    }
+    private Boolean vaidateEmail(String val) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if (val.isEmpty()) {
+            return false;
+        } else if (!val.matches(emailPattern)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

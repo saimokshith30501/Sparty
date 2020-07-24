@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="#A9C4DF"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:paddingTop="20dp"
     tools:context=".MainActivity"
     android:id="@+id/main_layout">
 
@@ -94,10 +96,11 @@
             android:layout_gravity="right"
             android:background="#00000000"
             android:padding="10dp"
-            android:text="Forgot Password"
+            android:textSize="14sp"
+            android:onClick="recoverPass"
+            android:text="@string/forgot_password"
             android:textColor="#000000"
             android:textStyle="bold">
-
         </Button>
 
         <Button
@@ -121,19 +124,31 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:transitionName="sign" />
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="#00000000"
             android:onClick="signup"
-            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:text="New User?SIGN UP"
             android:textColor="#000000"
-            android:textStyle="bold"></Button>
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"></Button>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:elevation="20dp"
+                android:layout_centerHorizontal="true">
+            </com.google.android.gms.common.SignInButton>
+        </RelativeLayout>
 
     </LinearLayout>
 

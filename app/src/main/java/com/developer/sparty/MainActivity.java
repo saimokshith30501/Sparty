@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
             finish();
                 }
-            },3000);
+            },2000);
 
         }
         else {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(startActivity,options.toBundle());
                     finish();
                 }
-            },3000);
+            },2000);
 
         }
     }

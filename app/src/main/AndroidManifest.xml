@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".DashboardActivity" android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar"></activity>
+        <activity android:name=".DashboardActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
         <activity android:name=".phoneverify" />
         <activity android:name=".signup" />
         <activity android:name=".LOGorREG" />

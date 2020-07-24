@@ -124,14 +124,15 @@ public class phoneverify extends AppCompatActivity {
                             HashMap<Object,String> hashMap= new HashMap<>();
                             hashMap.put("email",email);
                             hashMap.put("uid",uid);
-                            hashMap.put("username",signup.userHelperClass.FULLNAME);
+                            hashMap.put("fullname",signup.userHelperClass.FULLNAME);
+                            hashMap.put("username",signup.userHelperClass.USERNAME);
                             hashMap.put("phone",signup.userHelperClass.PHONE);
                             hashMap.put("image","");
                             firebaseDatabase=FirebaseDatabase.getInstance();
                             reference=firebaseDatabase.getReference("Users");
                             reference.child(uid).setValue(hashMap);
                             progressREG.dismiss();
-                            Toast.makeText(phoneverify.this, "SUCCESS"+user.getEmail(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(phoneverify.this, "Account created with "+user.getEmail(),Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(getApplicationContext(), DashboardActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);

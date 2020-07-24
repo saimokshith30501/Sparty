@@ -111,17 +111,20 @@ public class LOGorREG extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String uid=user.getUid();
-                            String email=user.getEmail();
-                            HashMap<Object,String> hashMap= new HashMap<>();
-                            hashMap.put("email",email);
-                            hashMap.put("uid",uid);
-                            hashMap.put("username","");
-                            hashMap.put("phone","");
-                            hashMap.put("image","");
-                            FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-                            DatabaseReference reference=firebaseDatabase.getReference("Users");
-                            reference.child(uid).setValue(hashMap);
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
+                                String uid=user.getUid();
+                                String email=user.getEmail();
+                                HashMap<Object,String> hashMap= new HashMap<>();
+                                hashMap.put("email",email);
+                                hashMap.put("uid",uid);
+                                hashMap.put("fullname",signup.userHelperClass.FULLNAME);
+                                hashMap.put("username",signup.userHelperClass.USERNAME);
+                                hashMap.put("phone",signup.userHelperClass.PHONE);
+                                hashMap.put("image","");
+                                FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
+                                DatabaseReference reference=firebaseDatabase.getReference("Users");
+                                reference.child(uid).setValue(hashMap);
+                            }
                             progressgoogle.dismiss();
                             Toast.makeText(LOGorREG.this, user.getEmail(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LOGorREG.this, DashboardActivity.class));

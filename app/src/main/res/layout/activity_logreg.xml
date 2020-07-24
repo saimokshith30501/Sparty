@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-10dp"
         android:fontFamily="@font/bungee"
-        android:text="Hello there,Welcome"
+        android:text="Sparty"
         android:textColor="#C80C0C0C"
         android:textSize="35sp"
         android:transitionName="logo_name" />
@@ -135,21 +135,38 @@
             android:textColor="#000000"
             android:textStyle="bold"
             android:layout_marginTop="5dp"></Button>
+        <Button
+            android:id="@+id/google_login"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="250dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_border"
+            android:drawableLeft="@drawable/google_logo"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:drawablePadding="0dp"
+            android:elevation="20dp"
+            android:fontFamily="@font/bungee"
+            android:onClick="signin"
+            android:text="Sign-In"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:transitionName="sign" />
 
-        <RelativeLayout
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/view_snack"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/google_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:elevation="20dp"
-                android:layout_centerHorizontal="true">
-            </com.google.android.gms.common.SignInButton>
-        </RelativeLayout>
-
+            android:layout_height="50dp"
+            android:layout_gravity="bottom">
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
 
 </LinearLayout>

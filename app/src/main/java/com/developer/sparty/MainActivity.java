@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
      Timer timer;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run(){
-        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        startActivity(new Intent(MainActivity.this, DashboardActivity.class));
             finish();
                 }
             },2000);

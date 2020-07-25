@@ -21,19 +21,12 @@ public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     BottomNavigationView bottomNavigationView;
-    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         mAuth = FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
-        ColorDrawable colorDrawable
-                = new ColorDrawable(Color.parseColor("#A9C4DF"));
-        actionBar=getSupportActionBar();
-        actionBar.setTitle("Home");
-        actionBar.setBackgroundDrawable(colorDrawable);
-        actionBar.setLogo(R.drawable.net);
         bottomNavigationView=findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(selectedListener);
         //on start default
@@ -48,7 +41,6 @@ public class DashboardActivity extends AppCompatActivity {
             switch (menuItem.getItemId()){
                 case R.id.home_dashboard:
                     //
-                    actionBar.setTitle("Home");
                     HomeFragment homeFragment=new HomeFragment();
                     FragmentTransaction ft1=getSupportFragmentManager().beginTransaction();
                     ft1.replace(R.id.content,homeFragment,"");
@@ -56,7 +48,6 @@ public class DashboardActivity extends AppCompatActivity {
                     return true;
                 case R.id.profile_dashboard:
                     //
-                    actionBar.setTitle("Profile");
                     ProfileFragment profileFragment=new ProfileFragment();
                     FragmentTransaction ft2=getSupportFragmentManager().beginTransaction();
                     ft2.replace(R.id.content,profileFragment,"");
@@ -64,7 +55,6 @@ public class DashboardActivity extends AppCompatActivity {
                     return true;
                 case R.id.settings_dashboard:
                     //
-                    actionBar.setTitle("Settings");
                     SettingsFragment settingsFragment=new SettingsFragment();
                     FragmentTransaction ft3=getSupportFragmentManager().beginTransaction();
                     ft3.replace(R.id.content,settingsFragment,"");

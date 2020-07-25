@@ -59,7 +59,6 @@ public class LOGorREG extends AppCompatActivity {
         slog=findViewById(R.id.slogan);
         uname=findViewById(R.id.username);
         pass=findViewById(R.id.password);
-        signin=findViewById(R.id.signin);
         forgot=findViewById(R.id.forgot_bt);
         signInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
@@ -111,24 +110,21 @@ public class LOGorREG extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
-                                String uid=user.getUid();
-                                String email=user.getEmail();
-                                HashMap<Object,String> hashMap= new HashMap<>();
-                                hashMap.put("email",email);
-                                hashMap.put("uid",uid);
-                                hashMap.put("fullname",signup.userHelperClass.FULLNAME);
-                                hashMap.put("username",signup.userHelperClass.USERNAME);
-                                hashMap.put("phone",signup.userHelperClass.PHONE);
-                                hashMap.put("image","");
-                                FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-                                DatabaseReference reference=firebaseDatabase.getReference("Users");
-                                reference.child(uid).setValue(hashMap);
-                            }
+                            String uid=user.getUid();
+                            String email=user.getEmail();
                             progressgoogle.dismiss();
-                            Toast.makeText(LOGorREG.this, user.getEmail(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LOGorREG.this, DashboardActivity.class));
-                            finish();
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
+                                Intent gsign=new Intent(LOGorREG.this, GoogleSignup.class);
+                                gsign.putExtra("EMAIL",email);
+                                gsign.putExtra("UID",uid);
+                                startActivity(gsign);
+                                finish();
+                            }
+                            else {
+                                Toast.makeText(LOGorREG.this, user.getEmail(), Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LOGorREG.this, DashboardActivity.class));
+                                finish();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             progressgoogle.dismiss();

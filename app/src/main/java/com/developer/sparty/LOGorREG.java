@@ -48,7 +48,7 @@ public class LOGorREG extends AppCompatActivity {
     Button signin,forgot;
     ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
-    Button signInButton;
+    Button gsignInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +60,8 @@ public class LOGorREG extends AppCompatActivity {
         uname=findViewById(R.id.username);
         pass=findViewById(R.id.password);
         forgot=findViewById(R.id.forgot_bt);
-        signInButton=findViewById(R.id.google_login);
+        signin=findViewById(R.id.signinb);
+        gsignInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Authenticating");
         progressReset = new ProgressDialog(this);
@@ -73,7 +74,7 @@ public class LOGorREG extends AppCompatActivity {
                 .build();
         googleSignInClient= GoogleSignIn.getClient(this,gso);
         mAuth=FirebaseAuth.getInstance();
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        gsignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Configure Google Sign In

@@ -40,8 +40,6 @@ public class phoneverify extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phoneverify);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        verifyB=findViewById(R.id.verify_btn);
-        codeLayout=findViewById(R.id.code_user);
         phoneno=getIntent().getStringExtra("NUM");
         mAuth = FirebaseAuth.getInstance();
         progressREG = new ProgressDialog(this);
@@ -125,7 +123,8 @@ public class phoneverify extends AppCompatActivity {
                             hashMap.put("email",email);
                             hashMap.put("uid",uid);
                             hashMap.put("fullname",signup.userHelperClass.FULLNAME);
-                            hashMap.put("onlineStatus","Online");
+                            hashMap.put("onlineStatus","");
+                            hashMap.put("typingTo","");
                             hashMap.put("username",signup.userHelperClass.USERNAME);
                             hashMap.put("phone",signup.userHelperClass.PHONE);
                             hashMap.put("image","");

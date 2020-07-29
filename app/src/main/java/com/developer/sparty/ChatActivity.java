@@ -6,8 +6,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.Animation;
@@ -54,6 +57,7 @@ public class ChatActivity extends AppCompatActivity {
     String image;
     Animation sendB;
     String oStatus;
+    String tStatus;
     MessageAdapter messageAdapter;
     List<Modelmessage> chatList;
     //for checking user has seen msg or not
@@ -94,15 +98,24 @@ public class ChatActivity extends AppCompatActivity {
                     uName=""+ds.child("fullname").getValue().toString();
                     image=""+ds.child("image").getValue().toString();
                     oStatus=""+ds.child("onlineStatus").getValue().toString();
-
-                    if (oStatus.equals("Online")){
-                        Cstatus.setText(oStatus);
+                    tStatus=""+ds.child("typingTo").getValue().toString();
+                    if (tStatus.equals(MyUid)) {
+                        Cstatus.setTextColor(Color.parseColor("#27F9C2"));
+                        Cstatus.setText("Typing...");
                     }
                     else {
-                        Calendar cal=Calendar.getInstance(Locale.ENGLISH);
-                        cal.setTimeInMillis(Long.parseLong(oStatus));
-                        String dateTime= DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
-                        Cstatus.setText("Seen at:"+dateTime);
+                        //check online status
+                        if (oStatus.equals("Online")){
+                            Cstatus.setTextColor(Color.WHITE);
+                            Cstatus.setText(oStatus);
+                        }
+                        else {
+                            Calendar cal=Calendar.getInstance(Locale.ENGLISH);
+                            cal.setTimeInMillis(Long.parseLong(oStatus));
+                            String dateTime= DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
+                            Cstatus.setTextColor(Color.WHITE);
+                            Cstatus.setText("Last Seen: "+dateTime);
+                        }
                     }
                     Cname.setText(uName);
                     try {
@@ -135,6 +148,27 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
+        Message.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+               if (s.toString().length()==0){
+                   checkTypingStatus("");
+               }
+               else {
+                   checkTypingStatus(UserUid);
+               }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +190,6 @@ public class ChatActivity extends AppCompatActivity {
                         hashseenMap.put("isSeen",true);
                         ds.getRef().updateChildren(hashseenMap);
                     }
-
                 }
             }
 
@@ -212,12 +245,20 @@ public class ChatActivity extends AppCompatActivity {
         //update
         dbRef.updateChildren(hashMap);
     }
+    private void checkTypingStatus(String Tstatus){
+        DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("Users").child(MyUid);
+        HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("typingTo",Tstatus);
+        //update
+        dbRef.updateChildren(hashMap);
+    }
     @Override
     protected void onPause() {
 
         super.onPause();
         String ts= String.valueOf(System.currentTimeMillis());
         checkOnlineStatus(ts);
+        checkTypingStatus("");
         userRefForSeen.removeEventListener(valueEventListener);
     }
 

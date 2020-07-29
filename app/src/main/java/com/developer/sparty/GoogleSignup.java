@@ -49,7 +49,8 @@ public class GoogleSignup extends AppCompatActivity {
             hashMap.put("email",email);
             hashMap.put("uid",uid);
             hashMap.put("fullname",fname.getEditText().getText().toString());
-            hashMap.put("onlineStatus","Online");
+            hashMap.put("onlineStatus","");
+            hashMap.put("typingTo","");
             hashMap.put("username",uname.getEditText().getText().toString());
             hashMap.put("phone",phone.getEditText().getText().toString());
             hashMap.put("image","");

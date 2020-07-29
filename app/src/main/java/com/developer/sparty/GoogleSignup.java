@@ -49,9 +49,11 @@ public class GoogleSignup extends AppCompatActivity {
             hashMap.put("email",email);
             hashMap.put("uid",uid);
             hashMap.put("fullname",fname.getEditText().getText().toString());
+            hashMap.put("onlineStatus","Online");
             hashMap.put("username",uname.getEditText().getText().toString());
             hashMap.put("phone",phone.getEditText().getText().toString());
             hashMap.put("image","");
+
             FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
             DatabaseReference reference=firebaseDatabase.getReference("Users");
             reference.child(uid).setValue(hashMap);

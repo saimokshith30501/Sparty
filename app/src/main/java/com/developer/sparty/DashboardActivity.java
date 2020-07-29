@@ -3,7 +3,6 @@ package com.developer.sparty;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
@@ -21,6 +20,7 @@ public class DashboardActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
     BottomNavigationView bottomNavigationView;
+    ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +29,9 @@ public class DashboardActivity extends AppCompatActivity {
         user=mAuth.getCurrentUser();
         bottomNavigationView=findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(selectedListener);
+        actionBar=getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#0582CA")));
+        actionBar.setTitle("Chats");
         //on start default
         HomeFragment homeFragment=new HomeFragment();
         FragmentTransaction ft1=getSupportFragmentManager().beginTransaction();
@@ -41,6 +44,8 @@ public class DashboardActivity extends AppCompatActivity {
             switch (menuItem.getItemId()){
                 case R.id.home_dashboard:
                     //
+                    actionBar.setTitle("Chats");
+                    actionBar.show();
                     HomeFragment homeFragment=new HomeFragment();
                     FragmentTransaction ft1=getSupportFragmentManager().beginTransaction();
                     ft1.replace(R.id.content,homeFragment,"");
@@ -48,41 +53,28 @@ public class DashboardActivity extends AppCompatActivity {
                     return true;
                 case R.id.profile_dashboard:
                     //
+                    actionBar.hide();
                     ProfileFragment profileFragment=new ProfileFragment();
                     FragmentTransaction ft2=getSupportFragmentManager().beginTransaction();
                     ft2.replace(R.id.content,profileFragment,"");
                     ft2.commit();
                     return true;
-                case R.id.settings_dashboard:
+                case R.id.users_dashboard:
                     //
-                    SettingsFragment settingsFragment=new SettingsFragment();
+                    actionBar.setTitle("Sparty");
+                    actionBar.setDisplayShowHomeEnabled(true);
+                    actionBar.setLogo(R.drawable.logo);
+                    actionBar.setDisplayUseLogoEnabled(true);
+                    actionBar.show();
+                    UsersFragment usersFragment =new UsersFragment();
                     FragmentTransaction ft3=getSupportFragmentManager().beginTransaction();
-                    ft3.replace(R.id.content,settingsFragment,"");
+                    ft3.replace(R.id.content, usersFragment,"");
                     ft3.commit();
                     return true;
             }
             return false;
         }
     };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        getActionBar().hide();
-        getMenuInflater().inflate(R.menu.menu_main,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id=item.getItemId();
-        if (id==R.id.logout_action){
-            mAuth.signOut();
-            Intent startActivity = new Intent(DashboardActivity.this, LOGorREG.class);
-            startActivity(startActivity);
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
     public void onBackPressed(){
         finish();
     }

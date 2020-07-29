@@ -125,6 +125,7 @@ public class phoneverify extends AppCompatActivity {
                             hashMap.put("email",email);
                             hashMap.put("uid",uid);
                             hashMap.put("fullname",signup.userHelperClass.FULLNAME);
+                            hashMap.put("onlineStatus","Online");
                             hashMap.put("username",signup.userHelperClass.USERNAME);
                             hashMap.put("phone",signup.userHelperClass.PHONE);
                             hashMap.put("image","");

@@ -1,6 +1,7 @@
 package com.developer.sparty;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -26,6 +27,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -61,8 +66,9 @@ import static com.google.firebase.storage.FirebaseStorage.getInstance;
 public class ProfileFragment extends Fragment{
     Button logout;
     TextView email,phone,fullname;
-    EditText username;
+    TextView username;
     ImageView profilepic;
+    ActionBar actionBar;
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -70,16 +76,15 @@ public class ProfileFragment extends Fragment{
     //storage
     StorageReference storageReference;
     //path
+    String currentPhotoPath;
     String storagePath="Users_Images/";
 
     FloatingActionButton fab;
     ProgressDialog pd1;
-    private static final int CAMERA_REQUEST_CODE=100;
-    private static final int STORAGE_REQUEST_CODE=200;
-    private static final int IMAGE_PICK_GALLERY_CODE=300;
-    private static final int IMAGE_PICK_CAMERA_CODE=400;
-    String cameraPermissions[];
-    String storagePermissions[];
+    RelativeLayout loadData;
+    public static final int CAMERA_PERM_CODE = 101;
+    public static final int CAMERA_REQUEST_CODE = 102;
+    public static final int GALLERY_REQUEST_CODE = 105;
     Uri image_uri;
     public ProfileFragment() {
         // Required empty public constructor
@@ -91,13 +96,12 @@ public class ProfileFragment extends Fragment{
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_profile, container, false);
-
         //initiating firebase constants
         mAuth=FirebaseAuth.getInstance();
         user=mAuth.getCurrentUser();
         database=FirebaseDatabase.getInstance();
         reference=database.getReference("Users");
-        storageReference=getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
 
                 //initialising views
@@ -108,19 +112,13 @@ public class ProfileFragment extends Fragment{
         phone =view.findViewById(R.id.profile_phone);
         profilepic =view.findViewById(R.id.profile_pic);
         username =view.findViewById(R.id.profile_username);
+        loadData=view.findViewById(R.id.load_data);
 
-        //initiating permissions
-        cameraPermissions=new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        cameraPermissions=new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
         //setting progress dialog
         pd1=new ProgressDialog(getContext());
         pd1.setMessage("Updating");
-
-
-
-
         Query query=reference.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -141,6 +139,7 @@ public class ProfileFragment extends Fragment{
                     Picasso.get().load(R.drawable.default_profile).into(profilepic);
                 }
             }
+            loadData.setVisibility(View.INVISIBLE);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -300,160 +299,113 @@ public class ProfileFragment extends Fragment{
             public void onClick(DialogInterface dialog, int which) {
                 if (which==0){
                        //from camera
-                    if (!checkCameraPermission()){
-                        reqCameraPermission();
-                    }
-                    else {
-                        pickFromCamera();
-                    }
+                    askCameraPermissions();
                 }
                 else if(which==1){
                         //from gallery
-                    if (!checkStoragePermission()){
-                        reqStoragePermission();
-                    }
-                    else {
-                        pickFromGallery();
-                    }
+                    Intent gallery = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    gallery.setType("image/*");
+                    startActivityForResult(gallery, GALLERY_REQUEST_CODE);
                 }
             }
         });
         builder.create().show();
     }
+
+    private void askCameraPermissions() {
+        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+        }else {
+            openCamera();
+//            dispatchTakePictureIntent();
+        }
+
+    }
+
+    private void openCamera() {
+        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent,CAMERA_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == CAMERA_PERM_CODE){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                openCamera();
+//                dispatchTakePictureIntent();
+            }else {
+                Toast.makeText(getActivity(), "Camera Permission is Required to Use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == CAMERA_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                image_uri=data.getData();
+                uploadImageToFirebase(image_uri);
+            }
+        }
+        if(requestCode == GALLERY_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                Uri contentUri = data.getData();
+                uploadImageToFirebase(contentUri);
+            }
+        }
+    }
+    private void uploadImageToFirebase(Uri contentUri) {
+        if (contentUri!=null){
+            pd1.show();
+            final String filePathAndName=storagePath+""+"Profile_"+user.getUid();
+            final StorageReference storageReference1=storageReference.child(filePathAndName);
+            storageReference1.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //image is uploaded now get its uri and store in database
+                    //get uri from firebase
+                    storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            HashMap<String,Object> results=new HashMap<>();
+                            results.put("image",uri.toString());
+                            reference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    pd1.dismiss();
+                                    Toast.makeText(getActivity(),"Uploaded",Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    pd1.dismiss();
+                                    Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd1.dismiss();
+                            Toast.makeText(getActivity(), "Failed to connect server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd1.dismiss();
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void finishActivity() {
         if(getActivity() != null) {
             getActivity().finish();
         }
-    }
-    private boolean checkStoragePermission(){
-        boolean res= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)==(PackageManager.PERMISSION_GRANTED);
-        return res;
-    }
-    private void reqStoragePermission(){
-        requestPermissions(storagePermissions,STORAGE_REQUEST_CODE);
-    }
-    private boolean checkCameraPermission(){
-        boolean res= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA)==(PackageManager.PERMISSION_GRANTED);
-        boolean res1= ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)==(PackageManager.PERMISSION_GRANTED);
-        return res&&res1;
-    }
-    private void reqCameraPermission(){
-        requestPermissions(cameraPermissions,CAMERA_REQUEST_CODE);
-
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        switch (requestCode){
-            case CAMERA_REQUEST_CODE:
-            {
-                  if (grantResults.length>0) {
-                      boolean camAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                      boolean writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                      if (camAccepted && writeAccepted) {
-                          pickFromCamera();
-                      } else {
-                          Toast.makeText(getActivity(), "Please Enable Permission", Toast.LENGTH_SHORT).show();
-                      }
-                  }
-            }
-            break;
-            case STORAGE_REQUEST_CODE:{
-
-                if (grantResults.length>0) {
-                    boolean writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if (writeAccepted) {
-                        pickFromGallery();
-                    } else {
-                        Toast.makeText(getActivity(), "Please Enable Permission", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-            }
-            break;
-        }
-    }
-    private void pickFromCamera() {
-
-        //intent of picking image from device camera
-        ContentValues values=new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE,"TempPic");
-        values.put(MediaStore.Images.Media.DESCRIPTION,"TempDes");
-
-        //put image uri
-        image_uri=getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-
-        //intent to start camera
-        Intent cameraIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,image_uri);
-        startActivityForResult(cameraIntent,IMAGE_PICK_CAMERA_CODE);
-    }
-    private void pickFromGallery() {
-        //to pick from gallery
-        Intent galleryIntent=new Intent(Intent.ACTION_PICK);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,IMAGE_PICK_GALLERY_CODE);
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        //this method will be called after picking image from gallery or gallery
-
-        if (requestCode==IMAGE_PICK_GALLERY_CODE){
-            if (requestCode==RESULT_OK){
-                image_uri=data.getData();
-                 uploadProfilePic(image_uri);
-            }
-            if (requestCode==IMAGE_PICK_CAMERA_CODE){
-                image_uri=data.getData();
-                uploadProfilePic(image_uri);
-            }
-        }
-    }
-    private void uploadProfilePic(Uri uri){
-           pd1.show();
-           String filePathAndName=storagePath+""+"Profile_"+user.getUid();
-           StorageReference storageReference1=storageReference.child(filePathAndName);
-           storageReference1.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-               @Override
-               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                   //image is uploaded now get its uri and store in database
-                  Task<Uri> uriTask=taskSnapshot.getStorage().getDownloadUrl();
-                  while (!uriTask.isSuccessful()){
-                      Uri dowloadUri=uriTask.getResult();
-
-                      //check if image is uploaded or not
-                      if (uriTask.isSuccessful()){
-                          HashMap<String,Object> results=new HashMap<>();
-                          results.put("image",dowloadUri.toString());
-                          reference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
-                              @Override
-                              public void onSuccess(Void aVoid) {
-                                  pd1.dismiss();
-                                  Toast.makeText(getActivity(),"Uploaded",Toast.LENGTH_SHORT).show();
-                              }
-                          }).addOnFailureListener(new OnFailureListener() {
-                              @Override
-                              public void onFailure(@NonNull Exception e) {
-                                  pd1.dismiss();
-                                  Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
-                              }
-                          });
-                      }
-                      else {
-                          pd1.dismiss();
-                          Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
-                      }
-
-                  }
-               }
-           }).addOnFailureListener(new OnFailureListener() {
-               @Override
-               public void onFailure(@NonNull Exception e) {
-                   pd1.dismiss();
-                   Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-               }
-           });
     }
     private Boolean vaidateName(String val) {
         if (val.isEmpty()) {

@@ -36,7 +36,7 @@
                 android:id="@+id/chat_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Person name"
+                android:text="-----------"
                 android:textColor="#ffffff"
                 android:textSize="18sp"
                 android:textStyle="bold">
@@ -45,7 +45,7 @@
                 android:id="@+id/chat_user_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Online"
+                android:text="-------"
                 android:textColor="#ffffff">
             </TextView>
         </LinearLayout>

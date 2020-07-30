@@ -9,18 +9,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
+
   <TextView
       android:id="@+id/show_message"
       android:layout_width="wrap_content"
-      android:layout_weight="1"
       android:layout_height="wrap_content"
       android:layout_gravity="top"
-      android:text="HHi dhdhdhc hd dhh dh hdh "
-      android:textSize="18sp"
-      android:textColor="#000000"
+      android:layout_weight="1"
+      android:background="@drawable/receivers_msg"
       android:padding="10dp"
-      android:background="@drawable/receivers_msg">
-  </TextView>
+      android:text="HHi dhdhdhc hd dhh dh hdh "
+      android:textColor="#000000"
+      android:textSize="18sp"></TextView>
   <TextView
       android:id="@+id/timeTv"
       android:layout_width="wrap_content"

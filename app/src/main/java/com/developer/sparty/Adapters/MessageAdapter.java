@@ -126,7 +126,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Myholder
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("message", "Message Deleted...");
                         ds.getRef().updateChildren(hashMap);
-                        Toast.makeText(context, "Message has been deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Message has been deleted...", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Toast.makeText(context, "Cannot delete", Toast.LENGTH_SHORT).show();

@@ -2,24 +2,23 @@ package com.developer.sparty.Models;
 
 public class ModelUser {
 
-    String fullname,phone,image,search,uid;
+    String fullname,phone,image,search,uid,onlineStatus,typingTo;
 
-    public ModelUser() {
-    }
-
-    public ModelUser(String fullname, String phone, String image, String search, String uid) {
+    public ModelUser(String fullname, String phone, String image, String search, String uid, String onlineStatus, String typingTo) {
         this.fullname = fullname;
         this.phone = phone;
         this.image = image;
         this.search = search;
         this.uid = uid;
+        this.onlineStatus = onlineStatus;
+        this.typingTo = typingTo;
     }
 
-    public String getfullname() {
+    public String getFullname() {
         return fullname;
     }
 
-    public void setfullname(String fullname) {
+    public void setFullname(String fullname) {
         this.fullname = fullname;
     }
 
@@ -54,4 +53,24 @@ public class ModelUser {
     public void setUid(String uid) {
         this.uid = uid;
     }
+
+    public String getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
+    public String getTypingTo() {
+        return typingTo;
+    }
+
+    public void setTypingTo(String typingTo) {
+        this.typingTo = typingTo;
+    }
+
+    public ModelUser() {
+    }
+
 }

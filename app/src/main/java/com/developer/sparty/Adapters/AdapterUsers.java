@@ -47,9 +47,10 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.Myholder> {
         holder.Name.setText(userName);
         holder.Phone.setText(userPhone);
         try {
-            Picasso.get().load(userImage).placeholder(R.drawable.default_profile).into(holder.Image);
+            Picasso.get().load(userImage).into(holder.Image);
         }
-        catch(Exception e) {
+        catch (Exception e){
+            Picasso.get().load(R.drawable.default_profile).into(holder.Image);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -57,8 +58,6 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.Myholder> {
             public void onClick(View v) {
                 Intent chatting=new Intent(context, ChatActivity.class);
                 chatting.putExtra("UID",userUID);
-                chatting.putExtra("NAME",userName);
-                chatting.putExtra("IMAGE",userImage);
                 context.startActivity(chatting);
             }
         });

@@ -110,7 +110,7 @@ public class UsersFragment extends Fragment {
                     ModelUser modelUser=ds.getValue(ModelUser.class);
                     //get all searched users except current user
                     if (!modelUser.getUid().equals(fuser.getUid())){
-                        if (modelUser.getfullname().toLowerCase().contains(query.toLowerCase())||
+                        if (modelUser.getFullname().toLowerCase().contains(query.toLowerCase())||
                                 modelUser.getPhone().toLowerCase().contains(query.toLowerCase())){
                             userList.add(modelUser);
                         }

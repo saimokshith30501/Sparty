@@ -19,11 +19,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.developer.sparty.Adapters.MessageAdapter;
+import com.developer.sparty.Models.ModelUser;
 import com.developer.sparty.Models.Modelmessage;
+import com.developer.sparty.Notifications.APIService;
+import com.developer.sparty.Notifications.Client;
+import com.developer.sparty.Notifications.Data;
+import com.developer.sparty.Notifications.Response;
+import com.developer.sparty.Notifications.Sender;
+import com.developer.sparty.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +47,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
     EditText Message;
@@ -60,6 +71,9 @@ public class ChatActivity extends AppCompatActivity {
     String tStatus;
     MessageAdapter messageAdapter;
     List<Modelmessage> chatList;
+    APIService apiService;
+    boolean notify=false;
+    boolean notified=true;
     //for checking user has seen msg or not
     ValueEventListener valueEventListener;
     DatabaseReference userRefForSeen;
@@ -67,6 +81,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        recyclerView=findViewById(R.id.chat_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -76,19 +95,14 @@ public class ChatActivity extends AppCompatActivity {
         Cstatus=findViewById(R.id.chat_user_status);
         SendMessage=findViewById(R.id.chat_sendbutton);
         Cpic=findViewById(R.id.chat_user_image);
-        recyclerView=findViewById(R.id.chat_recyclerView);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
         firebaseAuth=FirebaseAuth.getInstance();
         database=FirebaseDatabase.getInstance();
         user=firebaseAuth.getCurrentUser();
+        //create api service
+        apiService= Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
         sendB= AnimationUtils.loadAnimation(this,R.anim.send_button_anim);
         MyUid=user.getUid();
         UserUid=getIntent().getStringExtra("UID");
-
-
         databaseReference=FirebaseDatabase.getInstance().getReference("Users");
         Query uQuery=databaseReference.orderByChild("uid").equalTo(UserUid);
         uQuery.addValueEventListener(new ValueEventListener() {
@@ -104,12 +118,14 @@ public class ChatActivity extends AppCompatActivity {
                         Cstatus.setText("Typing...");
                     }
                     else {
-                        //check online status
-                        if (oStatus.equals("Online")){
+                        if (oStatus.equals("Online"))
+                        {
                             Cstatus.setTextColor(Color.WHITE);
                             Cstatus.setText(oStatus);
+                           notified=false;
                         }
                         else {
+                            notified=true;
                             Calendar cal=Calendar.getInstance(Locale.ENGLISH);
                             cal.setTimeInMillis(Long.parseLong(oStatus));
                             String dateTime= DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
@@ -137,6 +153,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SendMessage.setTranslationY(100);
                 String MSG=Message.getText().toString().trim();
+                notify = true;
                 //check if text is empty or not
                 if (TextUtils.isEmpty(MSG)){
                     Toast.makeText(ChatActivity.this, "Cannot Send Empty Text", Toast.LENGTH_SHORT).show();
@@ -146,6 +163,7 @@ public class ChatActivity extends AppCompatActivity {
                     sendMessage(MSG);
                     SendMessage.animate().translationYBy(-100).setDuration(500);
                 }
+                Message.setText("");
             }
         });
         Message.addTextChangedListener(new TextWatcher() {
@@ -199,7 +217,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    private void sendMessage(String msg) {
+    private void sendMessage(final String msg) {
         reference=database.getReference();
         String timestamp=String.valueOf(System.currentTimeMillis());
         HashMap<String,Object> hashMap=new HashMap<>();
@@ -209,8 +227,85 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("timestamp",timestamp);
         hashMap.put("isSeen",false);
         reference.child("Chats").push().setValue(hashMap);
-        Message.setText("");
+
+        DatabaseReference database=FirebaseDatabase.getInstance().getReference("Users").child(MyUid);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ModelUser modelUser=snapshot.getValue(ModelUser.class);
+                if (notify&&notified){
+                    sendNotification(UserUid,modelUser
+                    .getFullname(),msg);
+                }
+                notify=false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        final DatabaseReference chatRef1=FirebaseDatabase.getInstance().getReference("Chatlist").child(MyUid).child(UserUid);
+        chatRef1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                  if (!snapshot.exists()){
+                      chatRef1.child("id").setValue(UserUid);
+                  }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        final DatabaseReference chatRef2=FirebaseDatabase.getInstance().getReference("Chatlist").child(UserUid).child(MyUid);
+        chatRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()){
+                    chatRef2.child("id").setValue(MyUid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
+
+    private void sendNotification(String userUid, final String getfullname, final String msg) {
+        DatabaseReference allTokens=FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query=allTokens.orderByKey().equalTo(UserUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds:snapshot.getChildren()){
+                    Token token=ds.getValue(Token.class);
+                    Data data=new Data(MyUid,getfullname+":"+msg,"New Message",UserUid,R.drawable.app_logo);
+                    Sender sender=new Sender(data,token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<Response>() {
+                                @Override
+                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                                }
+
+                                @Override
+                                public void onFailure(Call<Response> call, Throwable t) {
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void readMessages(){
         reference=database.getReference("Chats");
         chatList=new ArrayList<>();
@@ -238,13 +333,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
-    private void checkOnlineStatus(String status){
-        DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("Users").child(MyUid);
-        HashMap<String,Object> hashMap=new HashMap<>();
-        hashMap.put("onlineStatus",status);
-        //update
-        dbRef.updateChildren(hashMap);
-    }
     private void checkTypingStatus(String Tstatus){
         DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("Users").child(MyUid);
         HashMap<String,Object> hashMap=new HashMap<>();
@@ -252,23 +340,22 @@ public class ChatActivity extends AppCompatActivity {
         //update
         dbRef.updateChildren(hashMap);
     }
+    private void checkOnlineStatus(String status){
+        DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("Users").child(MyUid);
+        HashMap<String,Object> hashMap=new HashMap<>();
+        hashMap.put("onlineStatus",status);
+        dbRef.updateChildren(hashMap);
+    }
     @Override
     protected void onPause() {
-
         super.onPause();
-        String ts= String.valueOf(System.currentTimeMillis());
-        checkOnlineStatus(ts);
         checkTypingStatus("");
         userRefForSeen.removeEventListener(valueEventListener);
     }
-
-    @Override
     protected void onResume() {
         checkOnlineStatus("Online");
         super.onResume();
     }
-
-    @Override
     protected void onStart() {
         checkOnlineStatus("Online");
         super.onStart();

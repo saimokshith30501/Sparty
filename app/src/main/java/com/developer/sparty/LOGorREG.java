@@ -48,7 +48,7 @@ public class LOGorREG extends AppCompatActivity {
     Button signin,forgot;
     ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
-    Button signInButton;
+    Button gsignInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +59,9 @@ public class LOGorREG extends AppCompatActivity {
         slog=findViewById(R.id.slogan);
         uname=findViewById(R.id.username);
         pass=findViewById(R.id.password);
-        signin=findViewById(R.id.signin);
         forgot=findViewById(R.id.forgot_bt);
-        signInButton=findViewById(R.id.google_login);
+        signin=findViewById(R.id.signinb);
+        gsignInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Authenticating");
         progressReset = new ProgressDialog(this);
@@ -74,7 +74,7 @@ public class LOGorREG extends AppCompatActivity {
                 .build();
         googleSignInClient= GoogleSignIn.getClient(this,gso);
         mAuth=FirebaseAuth.getInstance();
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        gsignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Configure Google Sign In
@@ -113,19 +113,19 @@ public class LOGorREG extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid=user.getUid();
                             String email=user.getEmail();
-                            HashMap<Object,String> hashMap= new HashMap<>();
-                            hashMap.put("email",email);
-                            hashMap.put("uid",uid);
-                            hashMap.put("username","");
-                            hashMap.put("phone","");
-                            hashMap.put("image","");
-                            FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-                            DatabaseReference reference=firebaseDatabase.getReference("Users");
-                            reference.child(uid).setValue(hashMap);
                             progressgoogle.dismiss();
-                            Toast.makeText(LOGorREG.this, user.getEmail(), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LOGorREG.this, DashboardActivity.class));
-                            finish();
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()){
+                                Intent gsign=new Intent(LOGorREG.this, GoogleSignup.class);
+                                gsign.putExtra("EMAIL",email);
+                                gsign.putExtra("UID",uid);
+                                startActivity(gsign);
+                                finish();
+                            }
+                            else {
+                                Toast.makeText(LOGorREG.this, user.getEmail(), Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LOGorREG.this, DashboardActivity.class));
+                                finish();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             progressgoogle.dismiss();

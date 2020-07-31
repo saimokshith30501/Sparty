@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:id="@+id/MessageLayout"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+  <TextView
+      android:id="@+id/show_message"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="top"
+      android:layout_weight="1"
+      android:background="@drawable/receivers_msg"
+      android:padding="10dp"
+      android:text="HHi dhdhdhc hd dhh dh hdh "
+      android:textColor="#000000"
+      android:textSize="18sp"></TextView>
+  <TextView
+      android:id="@+id/timeTv"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="#000000"
+      android:textSize="12sp"
+      android:text="25/07/2020 05:30pm">
+  </TextView>
+</LinearLayout>
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textColor="#000000"
+      android:id="@+id/isSeen"
+      android:visibility="gone"
+      android:textSize="12sp"
+      android:textAlignment="textEnd"
+      android:text="sent"
+      android:gravity="end">
+  </TextView>
+
+</LinearLayout>

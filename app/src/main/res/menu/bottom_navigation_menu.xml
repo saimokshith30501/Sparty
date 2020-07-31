@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_1"
+        android:id="@+id/home_dashboard"
         android:enabled="true"
         android:icon="@drawable/dashboard_home"
-        android:title="Home"/>
+        android:title="Chat"/>
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/users_dashboard"
         android:enabled="true"
-        android:icon="@drawable/signup_logo"
-        android:title="Message"/>
+        android:icon="@drawable/dashboard_users"
+        android:title="Users"/>
+    <item
+        android:id="@+id/profile_dashboard"
+        android:enabled="true"
+        android:icon="@drawable/dashboard_profile"
+        android:title="Profile"/>
+
 </menu>

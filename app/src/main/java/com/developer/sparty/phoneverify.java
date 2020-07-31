@@ -40,8 +40,6 @@ public class phoneverify extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phoneverify);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        verifyB=findViewById(R.id.verify_btn);
-        codeLayout=findViewById(R.id.code_user);
         phoneno=getIntent().getStringExtra("NUM");
         mAuth = FirebaseAuth.getInstance();
         progressREG = new ProgressDialog(this);
@@ -124,14 +122,17 @@ public class phoneverify extends AppCompatActivity {
                             HashMap<Object,String> hashMap= new HashMap<>();
                             hashMap.put("email",email);
                             hashMap.put("uid",uid);
-                            hashMap.put("username",signup.userHelperClass.FULLNAME);
+                            hashMap.put("fullname",signup.userHelperClass.FULLNAME);
+                            hashMap.put("onlineStatus","");
+                            hashMap.put("typingTo","");
+                            hashMap.put("username",signup.userHelperClass.USERNAME);
                             hashMap.put("phone",signup.userHelperClass.PHONE);
                             hashMap.put("image","");
                             firebaseDatabase=FirebaseDatabase.getInstance();
                             reference=firebaseDatabase.getReference("Users");
                             reference.child(uid).setValue(hashMap);
                             progressREG.dismiss();
-                            Toast.makeText(phoneverify.this, "SUCCESS"+user.getEmail(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(phoneverify.this, "Account created with "+user.getEmail(),Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(getApplicationContext(), DashboardActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);

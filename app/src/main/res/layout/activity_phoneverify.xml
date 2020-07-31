@@ -31,43 +31,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter verification code"
+            android:text="Authenticating automatically "
             android:textAlignment="center"
+            android:layout_marginTop="300dp"
             android:textColor="#4E859E"
-            android:textSize="16sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:orientation="vertical"
-        android:padding="50dp">
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/code_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="CODE"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/code_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:textColor="#000000"
-                android:textColorHighlight="#000000"></com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <Button
-            android:background="#A9C4DF"
-            android:id="@+id/verify_btn"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_width="match_parent"
-            android:text="Verify" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>

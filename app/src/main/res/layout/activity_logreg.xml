@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A9C4DF"
+    android:background="@color/background"
     android:orientation="vertical"
     android:paddingRight="20dp"
     android:paddingLeft="20dp"
     android:paddingTop="20dp"
     tools:context=".MainActivity"
     android:id="@+id/main_layout">
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="150dp"
@@ -41,6 +40,7 @@
         android:layout_marginTop="5dp"
         android:textSize="15sp"
         android:transitionName="slogan"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,15 +102,13 @@
             android:textColor="#000000"
             android:textStyle="bold">
         </Button>
-
         <Button
-            android:id="@+id/signin"
+            android:id="@+id/signinb"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="250dp"
             android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
             android:background="@drawable/button_border"
             android:drawableLeft="@drawable/login_logo"
             android:paddingLeft="60dp"
@@ -140,7 +138,7 @@
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="250dp"
             android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_border"
             android:drawableLeft="@drawable/google_logo"

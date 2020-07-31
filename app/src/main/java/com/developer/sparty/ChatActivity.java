@@ -12,24 +12,26 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.developer.sparty.Adapters.MessageAdapter;
 import com.developer.sparty.Models.ModelUser;
 import com.developer.sparty.Models.Modelmessage;
-import com.developer.sparty.Notifications.APIService;
-import com.developer.sparty.Notifications.Client;
 import com.developer.sparty.Notifications.Data;
-import com.developer.sparty.Notifications.Response;
 import com.developer.sparty.Notifications.Sender;
 import com.developer.sparty.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,16 +42,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
     EditText Message;
@@ -71,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
     String tStatus;
     MessageAdapter messageAdapter;
     List<Modelmessage> chatList;
-    APIService apiService;
+    private RequestQueue requestQueue;
     boolean notify=false;
     boolean notified=true;
     //for checking user has seen msg or not
@@ -94,12 +99,12 @@ public class ChatActivity extends AppCompatActivity {
         Cname=findViewById(R.id.chat_user_name);
         Cstatus=findViewById(R.id.chat_user_status);
         SendMessage=findViewById(R.id.chat_sendbutton);
+        requestQueue= Volley.newRequestQueue(getApplicationContext());
         Cpic=findViewById(R.id.chat_user_image);
         firebaseAuth=FirebaseAuth.getInstance();
         database=FirebaseDatabase.getInstance();
         user=firebaseAuth.getCurrentUser();
-        //create api service
-        apiService= Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
+
         sendB= AnimationUtils.loadAnimation(this,R.anim.send_button_anim);
         MyUid=user.getUid();
         UserUid=getIntent().getStringExtra("UID");
@@ -148,23 +153,20 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
-        SendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendMessage.setTranslationY(100);
-                String MSG=Message.getText().toString().trim();
-                notify = true;
-                //check if text is empty or not
-                if (TextUtils.isEmpty(MSG)){
-                    Toast.makeText(ChatActivity.this, "Cannot Send Empty Text", Toast.LENGTH_SHORT).show();
-                    SendMessage.animate().translationYBy(-100).setDuration(500);
-                }
-                else {
-                    sendMessage(MSG);
-                    SendMessage.animate().translationYBy(-100).setDuration(500);
-                }
-                Message.setText("");
+        SendMessage.setOnClickListener(v -> {
+            SendMessage.setTranslationY(100);
+            String MSG=Message.getText().toString().trim();
+            notify = true;
+            //check if text is empty or not
+            if (TextUtils.isEmpty(MSG)){
+                Toast.makeText(ChatActivity.this, "Cannot Send Empty Text", Toast.LENGTH_SHORT).show();
+                SendMessage.animate().translationYBy(-100).setDuration(500);
             }
+            else {
+                sendMessage(MSG);
+                SendMessage.animate().translationYBy(-100).setDuration(500);
+            }
+            Message.setText("");
         });
         Message.addTextChangedListener(new TextWatcher() {
             @Override
@@ -284,18 +286,28 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds:snapshot.getChildren()){
                     Token token=ds.getValue(Token.class);
-                    Data data=new Data(MyUid,getfullname+":"+msg,"New Message",UserUid,R.drawable.app_logo);
+                    Data data=new Data(MyUid,getfullname+": "+msg,"New Message",userUid,R.drawable.app_logo);
                     Sender sender=new Sender(data,token.getToken());
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<Response>() {
-                                @Override
-                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                                }
-
-                                @Override
-                                public void onFailure(Call<Response> call, Throwable t) {
-                                }
-                            });
+                    //fcm json object request
+                    try {
+                        JSONObject senderJsonObj=new JSONObject(new Gson().toJson(sender));
+                        JsonObjectRequest jsonObjectRequest=new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                response -> {
+                                    //response
+                                    Log.d("JSON_RESPONSE","onResponse "+response.toString());
+                                }, error -> Log.d("JSON_RESPONSE","onResponse "+error.toString())){
+                            @Override
+                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                Map<String,String> headers=new HashMap<>();
+                                headers.put("Content-Type","application/json");
+                                headers.put("Authorization","key=AAAAybt19gw:APA91bFX8GtkI0MBnuOcq7dWbVtTZL6unO1mKOV34du2fOBo_Xw-e12y2BGblJLOGop9n8jrfUUdq3Cvh-EYyJd8kVF6c8sPrgoEEeaF7EqNfViVGyrLTd1btBKVpDbF-nFzydn_7neh");
+                                return headers;
+                            }
+                        };
+                        requestQueue.add(jsonObjectRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

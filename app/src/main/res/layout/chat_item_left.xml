@@ -19,14 +19,27 @@
       android:background="@drawable/receivers_msg"
       android:padding="10dp"
       android:text="HHi dhdhdhc hd dhh dh hdh "
+      android:visibility="gone"
       android:textColor="#000000"
       android:textSize="18sp"></TextView>
+  <ImageView
+      android:id="@+id/PhotoIv"
+      android:layout_width="250dp"
+      android:layout_height="250dp"
+      android:adjustViewBounds="true"
+      android:src="@drawable/default_picture"
+      android:layout_marginRight="5dp"
+      android:scaleType="fitCenter"
+      android:padding="10dp">
+  </ImageView>
   <TextView
       android:id="@+id/timeTv"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="#000000"
       android:textSize="12sp"
+      android:layout_marginLeft="3dp"
+      android:padding="5dp"
       android:text="25/07/2020 05:30pm">
   </TextView>
 </LinearLayout>

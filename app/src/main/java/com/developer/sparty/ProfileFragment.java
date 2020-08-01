@@ -186,8 +186,7 @@ public class ProfileFragment extends Fragment{
                     }
                 });
                 bs.show();
-//               EditorBottomSheet eb=new EditorBottomSheet();
-//               eb.show(getFragmentManager(),"");
+//
 
             }
         });

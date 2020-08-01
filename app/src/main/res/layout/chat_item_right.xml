@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:id="@+id/MessageLayout"
     android:layout_height="wrap_content">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -15,23 +15,36 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="12sp"
-            android:paddingRight="5dp"
+            android:padding="5dp"
+            android:layout_marginRight="3dp"
             android:text="25/07/2020 05:30pm">
         </TextView>
         <TextView
             android:id="@+id/show_message"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:layout_toEndOf="@id/timeTv"
             android:text="HHi dhdhdhc hd dhh dh hdh "
             android:textSize="18sp"
+            android:layout_alignParentEnd="true"
             android:textColor="#000000"
             android:padding="10dp"
             android:background="@drawable/senders_msg">
         </TextView>
+        <ImageView
+            android:id="@+id/PhotoIv"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/default_picture"
+            android:scaleType="fitCenter"
+            android:padding="5dp">
+        </ImageView>
 
-    </LinearLayout>
+    </RelativeLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

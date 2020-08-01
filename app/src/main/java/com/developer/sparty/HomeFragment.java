@@ -140,7 +140,11 @@ public class HomeFragment extends Fragment {
                     ){   Calendar cal=Calendar.getInstance(Locale.ENGLISH);
                         cal.setTimeInMillis(Long.parseLong(chat.getTimestamp()));
                         String dateTime= DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
-                         theLastMessage=chat.getMessage();
+                        if (chat.getType().equals("image")) {
+                            theLastMessage = "Sent an image...";
+                        }else {
+                            theLastMessage = chat.getMessage();
+                        }
                         LastMessageTime=dateTime;
                     }
                 }

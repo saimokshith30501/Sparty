@@ -14,6 +14,7 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
+        app:menu="@menu/chat_options"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         //receiver profile pic
@@ -66,6 +67,17 @@
         android:background="#ffffff"
         android:gravity="center"
         android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/chat_attach"
+            android:onClick="openBsheet"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:src="@drawable/chat_attach"
+            android:scaleType="fitCenter"
+            android:padding="8dp"
+            android:layout_gravity="center_vertical">
+        </ImageButton>
         <EditText
             android:id="@+id/chat_message"
             android:layout_width="0dp"

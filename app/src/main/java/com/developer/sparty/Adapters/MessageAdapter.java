@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -62,10 +63,25 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Myholder
     public void onBindViewHolder(@NonNull final MessageAdapter.Myholder holder, final int position) {
         final String message = chatList.get(position).getMessage();
         final String timeStamp = chatList.get(position).getTimestamp();
+        final String type=chatList.get(position).getType();
         Calendar cal=Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(timeStamp));
         String dateTime= DateFormat.format("dd/MM/yyyy hh:mm aa",cal).toString();
-        holder.showMessage.setText(message);
+        if (type.equals("text")){
+            holder.showMessage.setVisibility(View.VISIBLE);
+            holder.MessageIv.setVisibility(View.GONE);
+            holder.showMessage.setText(message);
+        }
+        else if(type.equals("image")){
+            holder.showMessage.setVisibility(View.GONE);
+            holder.MessageIv.setVisibility(View.VISIBLE);
+            Picasso.get().load(message).placeholder(R.drawable.default_picture).into(holder.MessageIv);
+        }
+        else {
+            holder.showMessage.setVisibility(View.VISIBLE);
+            holder.MessageIv.setVisibility(View.GONE);
+            holder.showMessage.setText(message);
+        }
         holder.timeTv.setText(dateTime);
         if (position==chatList.size()-1){
             if (chatList.get(position).isSeen()) {
@@ -78,25 +94,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Myholder
             holder.isSeenTv.setVisibility(View.GONE);
         }
 
-         holder.Mlayout.setOnClickListener(new View.OnClickListener() {
+         holder.Mlayout.setOnLongClickListener(new View.OnLongClickListener() {
              @Override
-             public void onClick(View v) {
+             public boolean onLongClick(View v) {
                  AlertDialog.Builder builder=new AlertDialog.Builder(v.getRootView().getContext());
                  builder.setTitle("Delete");
                  builder.setMessage("Are you sure?");
                  builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which) {
-                               deleteMessage(position);
+                         if (chatList.get(position).getType().equals("text")) {
+                             deleteMessage(position);
+                         }
+                         else if(chatList.get(position).getType().equals("image")){
+                             deleteImageMessage(position);
+                         }
                      }
                  });
                  builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                      @Override
                      public void onClick(DialogInterface dialog, int which) {
-                              dialog.dismiss();
+                         dialog.dismiss();
                      }
                  });
                  builder.show();
+                 return false;
              }
          });
 
@@ -125,6 +147,35 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Myholder
                     if (ds.child("sender").getValue().equals(user.getUid())) {
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("message", "Message Deleted...");
+                        hashMap.put("type", "Deleted");
+                        ds.getRef().updateChildren(hashMap);
+                        Toast.makeText(context, "Message has been deleted...", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(context, "Cannot delete", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void deleteImageMessage(int position) {
+        String mStamp=chatList.get(position).getTimestamp();
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("Chats");
+        Query dMessage=databaseReference.orderByChild("timestamp").equalTo(mStamp);
+        final FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+        dMessage.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds:snapshot.getChildren()){
+                    if (ds.child("sender").getValue().equals(user.getUid())) {
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("message", "Message Deleted...");
+                        hashMap.put("type", "Deleted");
                         ds.getRef().updateChildren(hashMap);
                         Toast.makeText(context, "Message has been deleted...", Toast.LENGTH_SHORT).show();
                     }
@@ -150,11 +201,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.Myholder
 
         TextView showMessage;
         TextView isSeenTv,timeTv;
+        ImageView MessageIv;
         LinearLayout Mlayout;
         public Myholder(@NonNull View itemView) {
             super(itemView);
             Mlayout=itemView.findViewById(R.id.MessageLayout);
             showMessage = itemView.findViewById(R.id.show_message);
+            MessageIv = itemView.findViewById(R.id.PhotoIv);
             isSeenTv=itemView.findViewById(R.id.isSeen);
             timeTv=itemView.findViewById(R.id.timeTv);
         }

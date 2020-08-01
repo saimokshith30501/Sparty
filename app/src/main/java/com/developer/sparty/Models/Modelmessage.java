@@ -3,18 +3,19 @@ package com.developer.sparty.Models;
 import com.google.firebase.database.PropertyName;
 
 public class Modelmessage {
-    String sender,receiver,message,timestamp;
+    String sender,receiver,message,timestamp,type;
     boolean isSeen;
 
-    public Modelmessage(String sender, String receiver, String message, String timestamp, boolean isSeen) {
+    public Modelmessage() {
+    }
+
+    public Modelmessage(String sender, String receiver, String message, String timestamp, String type, boolean isSeen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
         this.timestamp = timestamp;
+        this.type = type;
         this.isSeen = isSeen;
-    }
-
-    public Modelmessage() {
     }
 
     public String getSender() {
@@ -48,6 +49,15 @@ public class Modelmessage {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @PropertyName("isSeen")
     public boolean isSeen() {
         return isSeen;

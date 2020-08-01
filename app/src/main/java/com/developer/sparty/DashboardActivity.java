@@ -138,6 +138,8 @@ public class DashboardActivity extends AppCompatActivity {
         super.onPause();
     }
     public void onBackPressed(){
+        String ts=String.valueOf(System.currentTimeMillis());
+        checkOnlineStatus(ts);
         finish();
     }
 

@@ -81,7 +81,7 @@ import java.util.Map;
 public class ChatActivity extends AppCompatActivity {
     EditText Message;
     TextView Cname,Cstatus;
-    ImageButton SendMessage,Attachments;
+    ImageButton SendMessage;
     ImageView Cpic;
     RecyclerView recyclerView;
     Toolbar toolbar;
@@ -133,7 +133,6 @@ public class ChatActivity extends AppCompatActivity {
         Cname=findViewById(R.id.chat_user_name);
         Cstatus=findViewById(R.id.chat_user_status);
         SendMessage=findViewById(R.id.chat_sendbutton);
-        Attachments=findViewById(R.id.chat_attach);
         requestQueue= Volley.newRequestQueue(getApplicationContext());
         Cpic=findViewById(R.id.chat_user_image);
         firebaseAuth=FirebaseAuth.getInstance();

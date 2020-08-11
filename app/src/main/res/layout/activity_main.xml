@@ -14,38 +14,26 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="250dp"
-            android:layout_height="259dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="250dp"
-            android:layout_marginBottom="100dp"
             android:transitionName="main_logo"
             app:srcCompat="@drawable/net" />
+        <TextView
+            android:layout_below="@id/imageView4"
+            android:id="@+id/name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center"
+            android:fontFamily="@font/bungee"
+            android:text="@string/app_name"
+            android:textColor="#1E1D1D"
+            android:textSize="40sp"
+            android:transitionName="logo_name">
+        </TextView>
     </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="@font/bungee"
-                android:text="@string/app_name"
-                android:textColor="#1E1D1D"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:transitionName="logo_name"></TextView>
-        </RelativeLayout>
-
-    </LinearLayout>
 
 </LinearLayout>

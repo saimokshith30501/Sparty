@@ -1,5 +1,4 @@
 package com.developer.sparty;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -28,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
      FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        ActionBar actionBar=getSupportActionBar();
+//        actionBar.hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);

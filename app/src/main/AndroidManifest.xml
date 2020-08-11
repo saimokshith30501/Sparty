@@ -14,7 +14,7 @@
         android:name=".MyApplication"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light">
         <activity android:name=".ChatActivity">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.SEND"/>-->
@@ -34,7 +34,8 @@
         <activity android:name=".phoneverify" />
         <activity android:name=".signup" />
         <activity android:name=".LOGorREG" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

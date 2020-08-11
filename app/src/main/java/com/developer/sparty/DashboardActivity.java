@@ -89,7 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
             switch (menuItem.getItemId()){
                 case R.id.home_dashboard:
                     //
-                    actionBar.setTitle(" "+"Chats");
+                    actionBar.setTitle(" "+"Sparty");
                     actionBar.setDisplayShowHomeEnabled(true);
                     actionBar.setLogo(R.drawable.logo);
                     actionBar.setDisplayUseLogoEnabled(true);
@@ -101,7 +101,11 @@ public class DashboardActivity extends AppCompatActivity {
                     return true;
                 case R.id.profile_dashboard:
                     //
-                    actionBar.hide();
+                    actionBar.setTitle(" "+"Profile");
+                    actionBar.setDisplayShowHomeEnabled(true);
+                    actionBar.setLogo(R.drawable.logo);
+                    actionBar.setDisplayUseLogoEnabled(true);
+                    actionBar.show();
                     ProfileFragment profileFragment=new ProfileFragment();
                     FragmentTransaction ft2=getSupportFragmentManager().beginTransaction();
                     ft2.replace(R.id.content,profileFragment,"");

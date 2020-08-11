@@ -4,86 +4,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F1F1F1"
     tools:context=".signup"
     android:orientation="vertical"
-    android:background="@color/background"
     android:padding="10dp">
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:padding="25sp"
-        android:src="@drawable/net"
-        android:transitionName="main_logo"/>
-
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bungee"
-        android:text="Sign up"
-        android:layout_marginTop="-25dp"
-        android:textColor="#C80C0C0C"
-        android:textSize="35sp"
-        android:transitionName="text_logo"/>
-    <TextView
-        android:id="@+id/slogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bungee"
-        android:text="enter the details"
-        android:textColor="#C8696A67"
-        android:textSize="15sp"
-        android:transitionName="slogan"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/app_logo"
+            android:layout_centerHorizontal="true"
+            android:transitionName="main_logo"/>
+        <TextView
+            android:layout_below="@id/logo"
+            android:id="@+id/welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bungee"
+            android:text="Sign up"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textColor="#C80C0C0C"
+            android:textSize="35sp"
+            android:transitionName="text_logo"/>
+        <TextView
+            android:layout_below="@id/welcome"
+            android:id="@+id/slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bungee"
+            android:layout_centerHorizontal="true"
+            android:text="enter the details"
+            android:textColor="#C8696A67"
+            android:textSize="15sp"
+            android:transitionName="slogan"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
+        android:padding="10dp"
         android:orientation="vertical">
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Fullname"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
+            android:theme="@style/MainTheme"
+            app:hintTextColor="@color/background"
+            android:textColorHint="@color/hintColour"
+            app:boxStrokeColor="@color/background"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/hintColour"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="2dp"
+            android:layout_marginBottom="5dp"
             android:transitionName="username_field">
-            
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:textColor="#000000"
-                
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/logo_fullname"
                 >
 
             </com.google.android.material.textfield.TextInputEditText>
             
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Username"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
-            app:counterEnabled="true"
-            app:counterMaxLength="15"
-            android:transitionName="username_field">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="#000000"
-                
-                >
-
-            </com.google.android.material.textfield.TextInputEditText>
-
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email"
@@ -91,17 +83,25 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Email"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
+            android:theme="@style/MainTheme"
+            android:textColorHint="@color/hintColour"
+            app:boxStrokeColor="@color/background"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/hintColour"
+            app:hintTextColor="@color/background"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="2dp"
+            android:layout_marginBottom="5dp"
             android:transitionName="username_field">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:textColor="#000000"
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_email_black_24dp"
                 >
-
             </com.google.android.material.textfield.TextInputEditText>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -110,23 +110,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="PhoneNo"
-            app:hintTextAppearance="@style/mytext"
-            app:boxStrokeColor="#000000"
+            android:hint="Phone No"
+            android:theme="@style/MainTheme"
+            android:textColorHint="@color/hintColour"
+            app:boxStrokeColor="@color/background"
+            app:endIconMode="clear_text"
+            android:layout_marginBottom="5dp"
+            app:hintTextColor="@color/background"
+            app:endIconTint="@color/hintColour"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="2dp"
             android:transitionName="username_field">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:textColor="#000000"
-                
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:maxLength="10"
+                android:drawableStart="@drawable/logo_phone"
                 >
-
             </com.google.android.material.textfield.TextInputEditText>
-
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -134,15 +140,25 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:transitionName="password_field"
-            app:boxStrokeColor="#000000"
-            app:hintTextAppearance="@style/mytext"
-            app:passwordToggleEnabled="true">
-
+            android:theme="@style/MainTheme"
+            android:textColorHint="@color/hintColour"
+            android:layout_marginBottom="5dp"
+            app:boxStrokeColor="@color/background"
+            app:endIconMode="password_toggle"
+            app:hintTextColor="@color/background"
+            app:endIconTint="@color/hintColour"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:counterEnabled="true"
+            app:counterTextColor="@color/background">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:textColor="#000000"
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_password"
                 >
 
             </com.google.android.material.textfield.TextInputEditText>
@@ -158,6 +174,7 @@
             android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:background="@drawable/button_border"
+            android:backgroundTint="@color/background"
             android:drawableLeft="@drawable/signup_logo"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"

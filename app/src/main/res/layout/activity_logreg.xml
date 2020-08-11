@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="#F1F1F1"
     android:orientation="vertical"
     android:paddingRight="20dp"
     android:paddingLeft="20dp"
@@ -16,9 +16,8 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:padding="10dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/app_logo"
             android:layout_centerHorizontal="true"
             android:transitionName="main_logo"/>
@@ -27,7 +26,7 @@
             android:layout_below="@id/logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/bungee"
             android:layout_centerHorizontal="true"
             android:text="Sparty"
@@ -43,7 +42,7 @@
             android:fontFamily="@font/bungee"
             android:text="Sign in to continue"
             android:textColor="#C8696A67"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             android:textSize="15sp"
             android:transitionName="slogan"/>
     </RelativeLayout>
@@ -59,35 +58,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:transitionName="username_field"
-            app:boxStrokeColor="#000000"
-            app:hintTextAppearance="@style/mytext">
+            app:hintTextColor="@color/background"
+            android:theme="@style/MainTheme"
+            android:textColorHint="@color/hintColour"
+            app:boxStrokeColor="@color/background"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/hintColour"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="2dp"
+            android:transitionName="username_field">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:textColor="#000000">
+                android:textColor="#000000"
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_email_black_24dp">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
+            android:theme="@style/MainTheme"
+            app:hintTextColor="@color/background"
+            android:textColorHint="@color/hintColour"
             android:transitionName="password_field"
             app:boxStrokeColor="#000000"
-            app:hintTextAppearance="@style/mytext"
             app:passwordToggleEnabled="true">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:textColor="#000000"
-                android:textColorHighlight="#000000">
-
+                android:textColorHighlight="#000000"
+                android:drawableTint="@color/hintColour"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_password">
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,6 +123,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/button_border"
+            android:backgroundTint="@color/background"
             android:drawableLeft="@drawable/login_logo"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
@@ -125,6 +137,7 @@
             android:textStyle="bold"
             android:transitionName="sign" />
         <Button
+            android:id="@+id/signup_bt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -146,7 +159,6 @@
             android:drawableLeft="@drawable/google_logo"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
-            android:drawablePadding="0dp"
             android:elevation="20dp"
             android:fontFamily="@font/bungee"
             android:onClick="signin"

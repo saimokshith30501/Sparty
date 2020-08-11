@@ -125,7 +125,6 @@ public class phoneverify extends AppCompatActivity {
                             hashMap.put("fullname",signup.userHelperClass.FULLNAME);
                             hashMap.put("onlineStatus","");
                             hashMap.put("typingTo","");
-                            hashMap.put("username",signup.userHelperClass.USERNAME);
                             hashMap.put("phone",signup.userHelperClass.PHONE);
                             hashMap.put("image","");
                             firebaseDatabase=FirebaseDatabase.getInstance();

@@ -1,14 +1,13 @@
 package com.developer.sparty;
 
 public class UserHelperClass {
-    String FULLNAME,USERNAME,EMAIL,PHONE,PASSWORD;
+    String FULLNAME,EMAIL,PHONE,PASSWORD;
 
     public UserHelperClass() {
     }
 
-    public UserHelperClass(String FULLNAME, String USERNAME, String EMAIL, String PHONE, String PASSWORD) {
+    public UserHelperClass(String FULLNAME,String EMAIL, String PHONE, String PASSWORD) {
         this.FULLNAME = FULLNAME;
-        this.USERNAME = USERNAME;
         this.EMAIL = EMAIL;
         this.PHONE = PHONE;
         this.PASSWORD = PASSWORD;
@@ -20,14 +19,6 @@ public class UserHelperClass {
 
     public void setFULLNAME(String FULLNAME) {
         this.FULLNAME = FULLNAME;
-    }
-
-    public String getUSERNAME() {
-        return USERNAME;
-    }
-
-    public void setUSERNAME(String USERNAME) {
-        this.USERNAME = USERNAME;
     }
 
     public String getEMAIL() {

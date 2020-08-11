@@ -33,14 +33,13 @@ public class GoogleSignup extends AppCompatActivity {
         setContentView(R.layout.activity_google_signup);
         uid=getIntent().getStringExtra("UID");
         email=getIntent().getStringExtra("EMAIL");
-        uname=findViewById(R.id.guname);
         fname=findViewById(R.id.gname);
         phone=findViewById(R.id.gphoneno);
         progressDialog= new ProgressDialog(this);
         progressDialog.setMessage("Registering");
     }
     public void signupgoogle(View view){
-        if (!vaidateName()| !vaidateUsername() | !vaidatePhone()){
+        if (!vaidateName() | !vaidatePhone()){
             return;
         }
         else {
@@ -51,31 +50,14 @@ public class GoogleSignup extends AppCompatActivity {
             hashMap.put("fullname",fname.getEditText().getText().toString());
             hashMap.put("onlineStatus","");
             hashMap.put("typingTo","");
-            hashMap.put("username",uname.getEditText().getText().toString());
             hashMap.put("phone",phone.getEditText().getText().toString());
             hashMap.put("image","");
-
             FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
             DatabaseReference reference=firebaseDatabase.getReference("Users");
             reference.child(uid).setValue(hashMap);
             progressDialog.dismiss();
             startActivity(new Intent(GoogleSignup.this, DashboardActivity.class));
             finish();
-        }
-    }
-    private Boolean vaidateUsername() {
-        String val = uname.getEditText().getText().toString();
-        String whiteSpace="\\A\\w{2,15}\\z";
-        if (val.isEmpty()) {
-            uname.setError("Field cannot be empty");
-            return false;
-        } else if (!val.matches(whiteSpace)) {
-            uname.setError("White Spaces are not allowed");
-            return false;
-        } else {
-            uname.setError(null);
-            uname.setErrorEnabled(false);
-            return true;
         }
     }
     private Boolean vaidateName() {

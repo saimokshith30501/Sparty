@@ -45,7 +45,7 @@ public class LOGorREG extends AppCompatActivity {
     ImageView logo;
     TextView textView,slog;
     TextInputLayout uname,pass;
-    Button signin,forgot;
+    Button signin,forgot,signup;
     ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
     Button gsignInButton;
@@ -60,6 +60,7 @@ public class LOGorREG extends AppCompatActivity {
         uname=findViewById(R.id.username);
         pass=findViewById(R.id.password);
         forgot=findViewById(R.id.forgot_bt);
+        signup=findViewById(R.id.signup_bt);
         signin=findViewById(R.id.signinb);
         gsignInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
@@ -144,7 +145,7 @@ public class LOGorREG extends AppCompatActivity {
         Intent startActivity = new Intent(LOGorREG.this, signup.class);
         Pair[] pairs=new Pair[6];
         pairs[0] = new Pair<View,String>(logo,"main_logo");
-        pairs[1] = new Pair<View,String>(textView,"text_logo");
+        pairs[1] = new Pair<View,String>(textView,"logo_name");
         pairs[2] = new Pair<View,String>(slog,"slogan");
         pairs[3] = new Pair<View,String>(uname,"username_field");
         pairs[4] = new Pair<View,String>(pass,"password_field");

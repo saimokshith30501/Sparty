@@ -49,16 +49,17 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                        <ImageView
+                        <com.airbnb.lottie.LottieAnimationView
                             android:id="@+id/profile_pic"
                             android:layout_width="250dp"
                             android:layout_height="250dp"
                             android:layout_centerInParent="true"
-                            android:layout_marginTop="25dp"
-                            android:padding="5dp"
+                            android:layout_margin="20dp"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/default_profile">
-                        </ImageView>
+                            app:lottie_rawRes="@raw/default_profile"
+                            app:lottie_autoPlay="true"
+                            app:lottie_loop="true">
+                        </com.airbnb.lottie.LottieAnimationView>
                     </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>

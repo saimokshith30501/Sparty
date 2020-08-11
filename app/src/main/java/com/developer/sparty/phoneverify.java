@@ -6,10 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.chaos.view.PinView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -27,14 +33,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class phoneverify extends AppCompatActivity {
     String phoneno,verifycationCODE;
     Button verifyB;
+    PinView pinFromUser;
+    Button VerifyOtp;
+    TextView otp,verification,detecting;
+//    GifImageView phoneVerification;
     TextInputLayout codeLayout;
+    LottieAnimationView phoneVerified,phoneVerification;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference reference;
     private FirebaseAuth mAuth;
-    ProgressDialog progressOTP,progressREG;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +54,31 @@ public class phoneverify extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         phoneno=getIntent().getStringExtra("NUM");
         mAuth = FirebaseAuth.getInstance();
-        progressREG = new ProgressDialog(this);
-        progressREG.setMessage("Registering user");
-        progressOTP = new ProgressDialog(this);
-        progressOTP.setMessage("Waiting for OTP");
+        phoneVerified = findViewById(R.id.phone_verified);
+        phoneVerification = findViewById(R.id.phone_verificaction);
         sendVerificationCodeToUser(phoneno);
+        pinFromUser = findViewById(R.id.pin_view);
+        VerifyOtp = findViewById(R.id.verifyOtpButton);
+        otp = findViewById(R.id.verify_otp);
+        verification = findViewById(R.id.verify_verification);
+        detecting = findViewById(R.id.verify_detect);
+        VerifyOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String code = pinFromUser.getText().toString();
+                if (!code.isEmpty()) {
+                    verifyCode(code);
+                } else {
+                    pinFromUser.setError("INCORRECT OTP");
+                }
+                try {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            }
+        });
     }
 
     private void sendVerificationCodeToUser(String phoneno) {
@@ -63,9 +95,8 @@ public class phoneverify extends AppCompatActivity {
         @Override
         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
-            progressOTP.show();
+            Toast.makeText(phoneverify.this, "CODE SENT", Toast.LENGTH_LONG).show();
             verifycationCODE=s;
-
         }
 
         @Override
@@ -79,7 +110,6 @@ public class phoneverify extends AppCompatActivity {
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
             Toast.makeText(phoneverify.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            progressOTP.dismiss();
             finish();
         }
     };
@@ -96,8 +126,13 @@ public class phoneverify extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            progressOTP.dismiss();
-                            progressREG.show();
+                            otp.setVisibility(View.GONE);
+                            detecting.setVisibility(View.GONE);
+                            verification.setVisibility(View.GONE);
+                            phoneVerification.setVisibility(View.GONE);
+                            VerifyOtp.setVisibility(View.GONE);
+                            pinFromUser.setVisibility(View.GONE);
+                            phoneVerified.setVisibility(View.VISIBLE);
                             regUser();
                         }
                         else {
@@ -130,15 +165,19 @@ public class phoneverify extends AppCompatActivity {
                             firebaseDatabase=FirebaseDatabase.getInstance();
                             reference=firebaseDatabase.getReference("Users");
                             reference.child(uid).setValue(hashMap);
-                            progressREG.dismiss();
-                            Toast.makeText(phoneverify.this, "Account created with "+user.getEmail(),Toast.LENGTH_SHORT).show();
-                            Intent intent=new Intent(getApplicationContext(), DashboardActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+                            new Handler().postDelayed(new Runnable(){
+                                @Override
+                                public void run(){
+                                    Toast.makeText(phoneverify.this, "Account created with "+user.getEmail(),Toast.LENGTH_SHORT).show();
+                                    Intent intent=new Intent(getApplicationContext(), DashboardActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            },2000);
+
                         } else {
                             // If sign in fails, display a message to the user.
-                            progressREG.dismiss();
                             Toast.makeText(phoneverify.this, "Authentication failed."+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                             finish();
                         }
@@ -146,7 +185,6 @@ public class phoneverify extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progressREG.dismiss();
                 Toast.makeText(phoneverify.this, "Failed."+e.getMessage(),Toast.LENGTH_SHORT).show();
                 finish();
             }

@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -67,7 +68,7 @@ public class ProfileFragment extends Fragment{
     Button logout;
     TextView email,phone,fullname;
     TextView username;
-    ImageView profilepic;
+    LottieAnimationView profilepic;
     ActionBar actionBar;
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -133,7 +134,7 @@ public class ProfileFragment extends Fragment{
                 try {
                     Picasso.get().load(image).into(profilepic);
                 } catch (Exception e) {
-                    Picasso.get().load(R.drawable.default_profile).into(profilepic);
+                    profilepic.setAnimation(R.raw.default_profile);
                 }
             }
             loadData.setVisibility(View.INVISIBLE);

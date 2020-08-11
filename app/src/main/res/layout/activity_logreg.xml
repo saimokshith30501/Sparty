@@ -4,51 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="#ffffff"
     android:orientation="vertical"
     android:paddingRight="20dp"
     android:paddingLeft="20dp"
     android:paddingTop="20dp"
     tools:context=".MainActivity"
     android:id="@+id/main_layout">
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:padding="20dp"
-        android:src="@drawable/net"
-        android:transitionName="main_logo"/>
-
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-10dp"
-        android:fontFamily="@font/bungee"
-        android:text="Sparty"
-        android:textColor="#C80C0C0C"
-        android:textSize="35sp"
-        android:transitionName="logo_name" />
-
-    <TextView
-        android:id="@+id/slogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bungee"
-        android:text="Sign in to continue"
-        android:textColor="#C8696A67"
-        android:layout_marginTop="5dp"
-        android:textSize="15sp"
-        android:transitionName="slogan"/>
-
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:padding="10dp"
+            android:src="@drawable/app_logo"
+            android:layout_centerHorizontal="true"
+            android:transitionName="main_logo"/>
+        <TextView
+            android:id="@+id/welcome"
+            android:layout_below="@id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:fontFamily="@font/bungee"
+            android:layout_centerHorizontal="true"
+            android:text="Sparty"
+            android:textColor="#C80C0C0C"
+            android:textSize="35sp"
+            android:transitionName="logo_name" />
+        <TextView
+            android:id="@+id/slogan"
+            android:layout_below="@id/welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/bungee"
+            android:text="Sign in to continue"
+            android:textColor="#C8696A67"
+            android:layout_marginTop="5dp"
+            android:textSize="15sp"
+            android:transitionName="slogan"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -58,13 +62,11 @@
             android:transitionName="username_field"
             app:boxStrokeColor="#000000"
             app:hintTextAppearance="@style/mytext">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:textColor="#000000">
-
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 

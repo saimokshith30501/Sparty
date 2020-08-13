@@ -1,16 +1,24 @@
 package com.developer.sparty;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +31,7 @@ import android.widget.Toast;
 
 import com.developer.sparty.Adapters.AdapterUsers;
 import com.developer.sparty.Models.ModelUser;
+import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +53,7 @@ public class UsersFragment extends Fragment {
     List<ModelUser> userList;
     RelativeLayout relativeLayout;
     TextView textView;
+    ArrayList<CONTACTS_DATA> listOfContacts;
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -60,11 +70,43 @@ public class UsersFragment extends Fragment {
         //set properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         //init user list
+
         userList=new ArrayList<>();
+        listOfContacts=new ArrayList<>();
+//        ReadContactsAndShowUsers();
         return view;
     }
+    public class CONTACTS_DATA{
+        public  String contact_data_name;
+        public  String contact_data_phoneNo;
+    }
+    private void ReadContactsAndShowUsers() {
+        Cursor cursor_Android_Contacts=getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null);
+        CONTACTS_DATA contacts_data=new CONTACTS_DATA();
+        while (cursor_Android_Contacts.moveToNext()){
+             String Contact_name=cursor_Android_Contacts.getString(cursor_Android_Contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+             String mobileNo=cursor_Android_Contacts.getString(cursor_Android_Contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+             contacts_data.contact_data_name=Contact_name;
+             contacts_data.contact_data_phoneNo=mobileNo;
+             listOfContacts.add(contacts_data);
+        }
+        for (int i=0;i<listOfContacts.size();i++){
+            Log.d("CONTACT",listOfContacts.get(i).contact_data_phoneNo);
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode==1){
+//            if (grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+//                ReadContactsAndShowUsers();
+//            }
+//            else {
+//                Toast.makeText(getContext(), "Permission is required", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     private void getAllUsers() {
         //get current user

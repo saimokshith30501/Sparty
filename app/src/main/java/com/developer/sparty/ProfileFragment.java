@@ -103,8 +103,6 @@ public class ProfileFragment extends Fragment{
         database=FirebaseDatabase.getInstance();
         reference=database.getReference("Users");
         storageReference = FirebaseStorage.getInstance().getReference();
-
-
                 //initialising views
         fab=view.findViewById(R.id.float_edit);
         logout =view.findViewById(R.id.profile_logout);
@@ -113,9 +111,6 @@ public class ProfileFragment extends Fragment{
         phone =view.findViewById(R.id.profile_phone);
         profilepic =view.findViewById(R.id.profile_pic);
         loadData=view.findViewById(R.id.load_data);
-
-
-
         //setting progress dialog
         pd1=new ProgressDialog(getContext());
         pd1.setMessage("Updating");
@@ -344,15 +339,19 @@ public class ProfileFragment extends Fragment{
             }
         }
         if(requestCode == GALLERY_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
+            if(resultCode == Activity.RESULT_OK && data!=null && data.getData()!=null){
                 Uri contentUri = data.getData();
                 uploadImageToFirebase(contentUri);
+            }
+            else {
+                Toast.makeText(getContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }
     private void uploadImageToFirebase(Uri contentUri) {
         if (contentUri!=null){
             pd1.show();
+            pd1.setCanceledOnTouchOutside(false);
             final String filePathAndName=storagePath+""+"Profile_"+user.getUid();
             final StorageReference storageReference1=storageReference.child(filePathAndName);
             storageReference1.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

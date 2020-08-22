@@ -40,7 +40,7 @@ public class DashboardActivity extends AppCompatActivity {
     String mUID;
     BottomNavigationView bottomNavigationView;
     ActionBar actionBar;
-    ArrayList<CONTACTS_DATA> listOfContacts;
+    static ArrayList<CONTACTS_DATA> listOfContacts;
     public static final int REQUEST_READ_CONTACTS = 79;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void ReadContactsAndShowUsers() {
-        ContentResolver cr = getContentResolver();
+        ContentResolver cr=getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
         if ((cur!=null?cur.getCount():0)>0) {
@@ -111,24 +111,32 @@ public class DashboardActivity extends AppCompatActivity {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
                             new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        contacts_data.contact_data_phoneNo=phoneNo;
+
+                    if (pCur.getCount()>0) {
+                        while (pCur.moveToNext()) {
+                            String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            if (phoneNo.startsWith("+91")||phoneNo.startsWith("0")){
+                               phoneNo=phoneNo.replaceAll("\\s+","").replace("+91","");
+                            }
+                            else {
+                                phoneNo=phoneNo.replaceAll("\\s+","");
+                            }
+                            contacts_data.contact_data_phoneNo = phoneNo;
+                        }
+                        listOfContacts.add(contacts_data);
+                    }
+                    else {
+                        Log.d("CONTACT", "NO LENGTH");
                     }
                     pCur.close();
                 }
-                listOfContacts.add(contacts_data);
             }
         }
-        if (cur!=null) {
-            cur.close();
-        }
-        for (int i = 0; i < listOfContacts.size(); i++) {
-            Log.d("CONTACT", listOfContacts.get(i).contact_data_phoneNo);
-            Log.d("CONTACT", listOfContacts.get(i).contact_data_name);
+        else {
+            Log.d("CONTACT", "NO CONTACTS FOUND");
         }
     }
 

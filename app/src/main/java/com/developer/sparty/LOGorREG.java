@@ -72,7 +72,6 @@ public class LOGorREG extends AppCompatActivity {
         progressReset.setMessage("Sending");
         progressgoogle = new ProgressDialog(this);
         progressgoogle.setMessage("Signing in");
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -84,6 +83,7 @@ public class LOGorREG extends AppCompatActivity {
             public void onClick(View v) {
                 // Configure Google Sign In
                 progressgoogle.show();
+                progressgoogle.setCanceledOnTouchOutside(false);
                     Intent signInIntent = googleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -134,7 +134,7 @@ public class LOGorREG extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             progressgoogle.dismiss();
-                            Snackbar.make(findViewById(R.id.view_snack), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Toast.makeText(LOGorREG.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -196,6 +196,7 @@ public class LOGorREG extends AppCompatActivity {
        }
        else {
            progressDialog.show();
+           progressDialog.setCanceledOnTouchOutside(false);
            isuser();
        }
    }
@@ -245,7 +246,7 @@ public class LOGorREG extends AppCompatActivity {
                  if (vaidateEmail(email)) {
                      beginRecovery(email);
                  }else {
-                     Snackbar.make(findViewById(R.id.view_snack), "Enter a valid email", Snackbar.LENGTH_SHORT).show();
+                     Toast.makeText(LOGorREG.this, "Enter a valid email", Toast.LENGTH_SHORT).show();
                  }
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -260,13 +261,14 @@ public class LOGorREG extends AppCompatActivity {
     }
     private void beginRecovery(String email) {
         progressReset.show();
+        progressReset.setCanceledOnTouchOutside(false);
         final int[] s = new int[1];
          mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
              @Override
              public void onComplete(@NonNull Task<Void> task) {
                  if (task.isSuccessful()){
                      progressReset.dismiss();
-                     Snackbar.make(findViewById(R.id.view_snack), "Reset Link has been sent successfully", Snackbar.LENGTH_SHORT).show();
+                     Toast.makeText(LOGorREG.this, "Reset Link has been sent successfully", Toast.LENGTH_SHORT).show();
                  }
                  else {
                      progressReset.dismiss();

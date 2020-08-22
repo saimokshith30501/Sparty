@@ -53,7 +53,7 @@ public class UsersFragment extends Fragment {
     List<ModelUser> userList;
     RelativeLayout relativeLayout;
     TextView textView;
-    ArrayList<CONTACTS_DATA> listOfContacts;
+//    ArrayList<DashboardActivity.CONTACTS_DATA> listOfContacts;
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -73,41 +73,9 @@ public class UsersFragment extends Fragment {
         //init user list
 
         userList=new ArrayList<>();
-        listOfContacts=new ArrayList<>();
-//        ReadContactsAndShowUsers();
+        getAllUsers();
         return view;
     }
-    public class CONTACTS_DATA{
-        public  String contact_data_name;
-        public  String contact_data_phoneNo;
-    }
-    private void ReadContactsAndShowUsers() {
-        Cursor cursor_Android_Contacts=getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null);
-        CONTACTS_DATA contacts_data=new CONTACTS_DATA();
-        while (cursor_Android_Contacts.moveToNext()){
-             String Contact_name=cursor_Android_Contacts.getString(cursor_Android_Contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-             String mobileNo=cursor_Android_Contacts.getString(cursor_Android_Contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-             contacts_data.contact_data_name=Contact_name;
-             contacts_data.contact_data_phoneNo=mobileNo;
-             listOfContacts.add(contacts_data);
-        }
-        for (int i=0;i<listOfContacts.size();i++){
-            Log.d("CONTACT",listOfContacts.get(i).contact_data_phoneNo);
-        }
-    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode==1){
-//            if (grantResults[0]==PackageManager.PERMISSION_GRANTED) {
-//                ReadContactsAndShowUsers();
-//            }
-//            else {
-//                Toast.makeText(getContext(), "Permission is required", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-
     private void getAllUsers() {
         //get current user
         final FirebaseUser fuser= FirebaseAuth.getInstance().getCurrentUser();
@@ -121,11 +89,20 @@ public class UsersFragment extends Fragment {
                 for (DataSnapshot ds: snapshot.getChildren()){
                     ModelUser modelUser=ds.getValue(ModelUser.class);
                     //get all users except current user
-                    if (!modelUser.getUid().equals(fuser.getUid())){
-                        userList.add(modelUser);
+                    Log.d("CONTACT", "SEARCH STARTED");
+                    if(!modelUser.getUid().isEmpty()) {
+                        if (!modelUser.getUid().equals(fuser.getUid())){
+                            for (int i=0; i<DashboardActivity.listOfContacts.size();i++){
+                                if (DashboardActivity.listOfContacts.get(i).contact_data_phoneNo.equals(modelUser.getPhone())){
+                                    userList.add(modelUser);
+                                    break;
+                                }
+                            }
+                        }
                     }
                     relativeLayout.setVisibility(View.INVISIBLE);
                     adapterUsers=new AdapterUsers(getActivity(),userList);
+                    adapterUsers.notifyDataSetChanged();
                     recyclerView.setAdapter(adapterUsers);
                 }
             }

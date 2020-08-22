@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.developer.sparty.Extras.CustomDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -79,9 +80,8 @@ public class ProfileFragment extends Fragment{
     //path
     String currentPhotoPath;
     String storagePath="Users_Images/";
-
+    CustomDialog customDialog;
     FloatingActionButton fab;
-    ProgressDialog pd1;
     RelativeLayout loadData;
     public static final int CAMERA_PERM_CODE = 101;
     public static final int CAMERA_REQUEST_CODE = 102;
@@ -112,8 +112,6 @@ public class ProfileFragment extends Fragment{
         profilepic =view.findViewById(R.id.profile_pic);
         loadData=view.findViewById(R.id.load_data);
         //setting progress dialog
-        pd1=new ProgressDialog(getContext());
-        pd1.setMessage("Updating");
         Query query=reference.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -247,37 +245,37 @@ public class ProfileFragment extends Fragment{
         builder.create().show();
     }
     private void beginUpdatingName(String Upname) {
-        pd1.show();
+       customDialog.startLoadingDialog();
         HashMap<String,Object> results=new HashMap<>();
         results.put("fullname",Upname);
         reference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                pd1.dismiss();
+               customDialog.dismissLoadingDialog();
                 Toast.makeText(getActivity(),"Updated",Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                pd1.dismiss();
+                customDialog.dismissLoadingDialog();
                 Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
             }
         });
     }
     private void beginUpdatingPhone(String UpPhone) {
-        pd1.show();
+        customDialog.startLoadingDialog();
         HashMap<String,Object> results=new HashMap<>();
         results.put("phone",UpPhone);
         reference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                pd1.dismiss();
+                customDialog.dismissLoadingDialog();
                 Toast.makeText(getActivity(),"Updated",Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                pd1.dismiss();
+                customDialog.dismissLoadingDialog();
                 Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
             }
         });
@@ -350,8 +348,7 @@ public class ProfileFragment extends Fragment{
     }
     private void uploadImageToFirebase(Uri contentUri) {
         if (contentUri!=null){
-            pd1.show();
-            pd1.setCanceledOnTouchOutside(false);
+            customDialog.startLoadingDialog();
             final String filePathAndName=storagePath+""+"Profile_"+user.getUid();
             final StorageReference storageReference1=storageReference.child(filePathAndName);
             storageReference1.putFile(contentUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -367,13 +364,13 @@ public class ProfileFragment extends Fragment{
                             reference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    pd1.dismiss();
+                                    customDialog.dismissLoadingDialog();
                                     Toast.makeText(getActivity(),"Uploaded",Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    pd1.dismiss();
+                                    customDialog.dismissLoadingDialog();
                                     Toast.makeText(getActivity(),"Some Error occured Try again",Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -381,7 +378,7 @@ public class ProfileFragment extends Fragment{
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            pd1.dismiss();
+                            customDialog.dismissLoadingDialog();
                             Toast.makeText(getActivity(), "Failed to connect server", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -389,7 +386,7 @@ public class ProfileFragment extends Fragment{
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    pd1.dismiss();
+                    customDialog.dismissLoadingDialog();
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

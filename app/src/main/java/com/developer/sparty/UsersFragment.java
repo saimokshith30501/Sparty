@@ -90,13 +90,13 @@ public class UsersFragment extends Fragment {
                     ModelUser modelUser=ds.getValue(ModelUser.class);
                     //get all users except current user
                     Log.d("CONTACT", "SEARCH STARTED");
-                    if (!modelUser.getUid().equals(fuser.getUid())){
-                        for (int i=0; i<DashboardActivity.listOfContacts.size();i++){
-                            Log.d("CONTACT", DashboardActivity.listOfContacts.get(i).contact_data_phoneNo);
-                            Log.d("CONTACT", modelUser.getPhone());
-                            if (DashboardActivity.listOfContacts.get(i).contact_data_phoneNo.equals(modelUser.getPhone())){
-                                userList.add(modelUser);
-                                break;
+                    if(!modelUser.getUid().isEmpty()) {
+                        if (!modelUser.getUid().equals(fuser.getUid())){
+                            for (int i=0; i<DashboardActivity.listOfContacts.size();i++){
+                                if (DashboardActivity.listOfContacts.get(i).contact_data_phoneNo.equals(modelUser.getPhone())){
+                                    userList.add(modelUser);
+                                    break;
+                                }
                             }
                         }
                     }

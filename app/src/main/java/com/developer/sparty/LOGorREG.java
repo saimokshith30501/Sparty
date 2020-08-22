@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.sparty.Extras.CustomDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -49,7 +50,8 @@ public class LOGorREG extends AppCompatActivity {
     TextView textView,slog;
     TextInputLayout uname,pass;
     Button signin,forgot,signup;
-    ProgressDialog progressDialog,progressReset,progressgoogle;
+    CustomDialog customDialog;
+//    ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
     Button gsignInButton;
     @Override
@@ -66,12 +68,13 @@ public class LOGorREG extends AppCompatActivity {
         signup=findViewById(R.id.signup_bt);
         signin=findViewById(R.id.signinb);
         gsignInButton=findViewById(R.id.google_login);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Authenticating");
-        progressReset = new ProgressDialog(this);
-        progressReset.setMessage("Sending");
-        progressgoogle = new ProgressDialog(this);
-        progressgoogle.setMessage("Signing in");
+//        progressDialog = new ProgressDialog(this);
+//////        progressDialog.setMessage("Authenticating");
+//////        progressReset = new ProgressDialog(this);
+//////        progressReset.setMessage("Sending");
+//////        progressgoogle = new ProgressDialog(this);
+//////        progressgoogle.setMessage("Signing in");
+        customDialog=new CustomDialog(LOGorREG.this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -82,8 +85,7 @@ public class LOGorREG extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Configure Google Sign In
-                progressgoogle.show();
-                progressgoogle.setCanceledOnTouchOutside(false);
+                customDialog.startLoadingDialog();
                     Intent signInIntent = googleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
             }
@@ -102,7 +104,7 @@ public class LOGorREG extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-                progressgoogle.dismiss();
+              customDialog.dismissLoadingDialog();
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -118,7 +120,7 @@ public class LOGorREG extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid=user.getUid();
                             String email=user.getEmail();
-                            progressgoogle.dismiss();
+                           customDialog.dismissLoadingDialog();
                             if (task.getResult().getAdditionalUserInfo().isNewUser()){
                                 Intent gsign=new Intent(LOGorREG.this, GoogleSignup.class);
                                 gsign.putExtra("EMAIL",email);
@@ -133,14 +135,14 @@ public class LOGorREG extends AppCompatActivity {
                             }
                         } else {
                             // If sign in fails, display a message to the user.
-                            progressgoogle.dismiss();
+                            customDialog.dismissLoadingDialog();
                             Toast.makeText(LOGorREG.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progressgoogle.dismiss();
+                customDialog.dismissLoadingDialog();
                 Toast.makeText(LOGorREG.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -195,8 +197,7 @@ public class LOGorREG extends AppCompatActivity {
            return;
        }
        else {
-           progressDialog.show();
-           progressDialog.setCanceledOnTouchOutside(false);
+           customDialog.startLoadingDialog();
            isuser();
        }
    }
@@ -209,13 +210,13 @@ public class LOGorREG extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            progressDialog.dismiss();
+                            customDialog.dismissLoadingDialog();
                             FirebaseUser user = mAuth.getCurrentUser();
                             startActivity(new Intent(LOGorREG.this, DashboardActivity.class));
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
-                            progressDialog.dismiss();
+                            customDialog.dismissLoadingDialog();
                             Toast.makeText(LOGorREG.this, "Wrong Credentials",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -260,18 +261,17 @@ public class LOGorREG extends AppCompatActivity {
         builder.create().show();
     }
     private void beginRecovery(String email) {
-        progressReset.show();
-        progressReset.setCanceledOnTouchOutside(false);
+        customDialog.startLoadingDialog();
         final int[] s = new int[1];
          mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
              @Override
              public void onComplete(@NonNull Task<Void> task) {
                  if (task.isSuccessful()){
-                     progressReset.dismiss();
+                     customDialog.dismissLoadingDialog();
                      Toast.makeText(LOGorREG.this, "Reset Link has been sent successfully", Toast.LENGTH_SHORT).show();
                  }
                  else {
-                     progressReset.dismiss();
+                     customDialog.dismissLoadingDialog();
 //                     Snackbar.make(findViewById(R.id.viewSnack),task.getException().getMessage(),Snackbar.LENGTH_SHORT).show();
                      Toast.makeText(LOGorREG.this, "Failed "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                  }
@@ -279,7 +279,7 @@ public class LOGorREG extends AppCompatActivity {
          }).addOnFailureListener(new OnFailureListener() {
              @Override
              public void onFailure(@NonNull Exception e) {
-                 progressReset.dismiss();
+                 customDialog.dismissLoadingDialog();
                  Toast.makeText(LOGorREG.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
              }
          });

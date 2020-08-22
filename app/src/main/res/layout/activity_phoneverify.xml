@@ -21,6 +21,7 @@
             android:fontFamily="@font/bungee"
             android:textColor="@color/black"
             android:layout_marginTop="10dp"
+            android:includeFontPadding="false"
             android:layout_gravity="center">
         </TextView>
         <com.airbnb.lottie.LottieAnimationView
@@ -53,16 +54,19 @@
             android:layout_height="wrap_content"
             android:text="VERIFICATION"
             android:textSize="25sp"
+            android:includeFontPadding="false"
             android:fontFamily="@font/bungee"
             android:textColor="@color/black"
             android:layout_marginTop="20dp"
             android:layout_gravity="center">
         </TextView>
         <TextView
+            android:layout_marginTop="10dp"
             android:id="@+id/verify_detect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Detecting Automatically"
+            android:includeFontPadding="false"
             android:textSize="15sp"
             android:fontFamily="@font/bungee"
             android:textColor="@color/black"

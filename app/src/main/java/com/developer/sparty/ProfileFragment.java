@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -67,7 +68,7 @@ public class ProfileFragment extends Fragment{
     Button logout;
     TextView email,phone,fullname;
     TextView username;
-    ImageView profilepic;
+    LottieAnimationView profilepic;
     ActionBar actionBar;
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -111,7 +112,6 @@ public class ProfileFragment extends Fragment{
         fullname =view.findViewById(R.id.profile_fullname);
         phone =view.findViewById(R.id.profile_phone);
         profilepic =view.findViewById(R.id.profile_pic);
-        username =view.findViewById(R.id.profile_username);
         loadData=view.findViewById(R.id.load_data);
 
 
@@ -124,7 +124,6 @@ public class ProfileFragment extends Fragment{
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
             for (DataSnapshot ds: snapshot.getChildren()){
-                String uname = "" + ds.child("username").getValue().toString();
                 String mail = "" + ds.child("email").getValue().toString();
                 String ph = "" + ds.child("phone").getValue().toString();
                 String fname = "" + ds.child("fullname").getValue().toString();
@@ -132,11 +131,10 @@ public class ProfileFragment extends Fragment{
                 email.setText(mail);
                 phone.setText(ph);
                 fullname.setText(fname);
-                username.setText(uname);
                 try {
                     Picasso.get().load(image).into(profilepic);
                 } catch (Exception e) {
-                    Picasso.get().load(R.drawable.default_profile).into(profilepic);
+                    profilepic.setAnimation(R.raw.default_profile);
                 }
             }
             loadData.setVisibility(View.INVISIBLE);

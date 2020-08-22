@@ -2,12 +2,15 @@ package com.developer.sparty;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -45,7 +48,7 @@ public class LOGorREG extends AppCompatActivity {
     ImageView logo;
     TextView textView,slog;
     TextInputLayout uname,pass;
-    Button signin,forgot;
+    Button signin,forgot,signup;
     ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
     Button gsignInButton;
@@ -60,6 +63,7 @@ public class LOGorREG extends AppCompatActivity {
         uname=findViewById(R.id.username);
         pass=findViewById(R.id.password);
         forgot=findViewById(R.id.forgot_bt);
+        signup=findViewById(R.id.signup_bt);
         signin=findViewById(R.id.signinb);
         gsignInButton=findViewById(R.id.google_login);
         progressDialog = new ProgressDialog(this);
@@ -68,6 +72,7 @@ public class LOGorREG extends AppCompatActivity {
         progressReset.setMessage("Sending");
         progressgoogle = new ProgressDialog(this);
         progressgoogle.setMessage("Signing in");
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -144,7 +149,7 @@ public class LOGorREG extends AppCompatActivity {
         Intent startActivity = new Intent(LOGorREG.this, signup.class);
         Pair[] pairs=new Pair[6];
         pairs[0] = new Pair<View,String>(logo,"main_logo");
-        pairs[1] = new Pair<View,String>(textView,"text_logo");
+        pairs[1] = new Pair<View,String>(textView,"logo_name");
         pairs[2] = new Pair<View,String>(slog,"slogan");
         pairs[3] = new Pair<View,String>(uname,"username_field");
         pairs[4] = new Pair<View,String>(pass,"password_field");

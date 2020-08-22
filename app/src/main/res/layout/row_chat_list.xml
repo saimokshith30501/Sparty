@@ -5,6 +5,7 @@
     app:contentPadding="10dp"
     app:cardBackgroundColor="#FFFFFF"
     app:cardElevation="10dp"
+    android:theme="@style/Theme.MaterialComponents.Light"
     android:layout_height="wrap_content">
 <RelativeLayout
     android:layout_width="match_parent"

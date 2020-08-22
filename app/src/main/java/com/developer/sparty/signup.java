@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class signup extends AppCompatActivity {
-    TextInputLayout fullname, username, emailid, password, phone;
+    TextInputLayout fullname, emailid, password, phone;
     static UserHelperClass userHelperClass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,6 @@ public class signup extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         fullname = findViewById(R.id.name);
-        username = findViewById(R.id.username);
         emailid = findViewById(R.id.email);
         phone = findViewById(R.id.phoneno);
         password = findViewById(R.id.password);
@@ -32,21 +31,6 @@ public class signup extends AppCompatActivity {
             return false;
         } else {
             fullname.setError(null);
-            return true;
-        }
-    }
-    private Boolean vaidateUsername() {
-        String val = username.getEditText().getText().toString();
-        String whiteSpace="\\A\\w{2,15}\\z";
-        if (val.isEmpty()) {
-            username.setError("Field cannot be empty");
-            return false;
-        } else if (!val.matches(whiteSpace)) {
-            username.setError("White Spaces are not allowed");
-            return false;
-        } else {
-            username.setError(null);
-            username.setErrorEnabled(false);
             return true;
         }
     }
@@ -106,15 +90,14 @@ public class signup extends AppCompatActivity {
 
 
     public void addData(View view) {
-        if (!vaidateName()| !vaidateUsername() | !vaidateEmail() | !vaidatePhone() | !vaidatePassword() ){
+        if (!vaidateName()| !vaidateEmail() | !vaidatePhone() | !vaidatePassword() ){
             return;
         }
         String regName = fullname.getEditText().getText().toString();
-        String regUsername = username.getEditText().getText().toString();
         String regEmail = emailid.getEditText().getText().toString();
         String regPassword = password.getEditText().getText().toString();
         String regPhone = phone.getEditText().getText().toString();
-        userHelperClass=new UserHelperClass(regName,regUsername,regEmail,regPhone,regPassword);
+        userHelperClass=new UserHelperClass(regName,regEmail,regPhone,regPassword);
         Intent startActivity = new Intent(signup.this, phoneverify.class);
         startActivity.putExtra("NUM",regPhone);
         startActivity(startActivity);

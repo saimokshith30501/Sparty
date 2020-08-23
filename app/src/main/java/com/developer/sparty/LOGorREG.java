@@ -22,7 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.sparty.Extras.CheckConnection;
 import com.developer.sparty.Extras.CustomDialog;
+import com.developer.sparty.Extras.NetConnection;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,6 +42,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.rezwan.knetworklib.KNetwork;
 
 import java.util.HashMap;
 
@@ -51,6 +54,7 @@ public class LOGorREG extends AppCompatActivity {
     TextInputLayout uname,pass;
     Button signin,forgot,signup;
     CustomDialog customDialog;
+    NetConnection netConnection;
 //    ProgressDialog progressDialog,progressReset,progressgoogle;
     private FirebaseAuth mAuth;
     Button gsignInButton;
@@ -75,6 +79,7 @@ public class LOGorREG extends AppCompatActivity {
 //////        progressgoogle = new ProgressDialog(this);
 //////        progressgoogle.setMessage("Signing in");
         customDialog=new CustomDialog(LOGorREG.this);
+        netConnection=new NetConnection(LOGorREG.this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -193,6 +198,10 @@ public class LOGorREG extends AppCompatActivity {
         }
     }
     public void signin(View view) {
+        if (!new CheckConnection(LOGorREG.this).CheckNet())
+        {
+            netConnection.startLoadingDialog();
+        }
        if (!validateUsername() | !validatePassword()) {
            return;
        }

@@ -103,7 +103,8 @@ public class ProfileFragment extends Fragment{
         database=FirebaseDatabase.getInstance();
         reference=database.getReference("Users");
         storageReference = FirebaseStorage.getInstance().getReference();
-                //initialising views
+        //initialising views
+        customDialog=new CustomDialog(getActivity());
         fab=view.findViewById(R.id.float_edit);
         logout =view.findViewById(R.id.profile_logout);
         email =view.findViewById(R.id.profile_email);
@@ -124,9 +125,10 @@ public class ProfileFragment extends Fragment{
                 email.setText(mail);
                 phone.setText(ph);
                 fullname.setText(fname);
-                try {
+                if(!image.isEmpty()){
                     Picasso.get().load(image).into(profilepic);
-                } catch (Exception e) {
+                }
+                else {
                     profilepic.setAnimation(R.raw.default_profile);
                 }
             }
